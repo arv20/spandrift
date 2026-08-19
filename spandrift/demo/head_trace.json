@@ -1,0 +1,637 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "spandrift-demo"
+            }
+          },
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "python"
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "spandrift.profiler",
+            "version": "0.1.0"
+          },
+          "spans": [
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "bdcf538c50a44b7f",
+              "name": "chat gpt-4o",
+              "kind": 3,
+              "startTimeUnixNano": "1787109743754314000",
+              "endTimeUnixNano": "1787109743785704000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "chat"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.model",
+                  "value": {
+                    "stringValue": "gpt-4o"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.model",
+                  "value": {
+                    "stringValue": "gpt-4o"
+                  }
+                },
+                {
+                  "key": "gen_ai.provider.name",
+                  "value": {
+                    "stringValue": "openai"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.input_tokens",
+                  "value": {
+                    "intValue": "350"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.output_tokens",
+                  "value": {
+                    "intValue": "120"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.time_to_first_chunk",
+                  "value": {
+                    "doubleValue": 0.021067
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "bc3a74a287b6485d"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "c850c0c591c04510",
+              "name": "web_search",
+              "kind": 1,
+              "startTimeUnixNano": "1787109743785790000",
+              "endTimeUnixNano": "1787109743796880000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "140857bef839b766"
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "140857bef839b766"
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "bc3a74a287b6485d"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "002ec832eeef4ddc",
+              "name": "chat gpt-4o",
+              "kind": 3,
+              "startTimeUnixNano": "1787109743764571000",
+              "endTimeUnixNano": "1787109743806780000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "chat"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.model",
+                  "value": {
+                    "stringValue": "gpt-4o"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.model",
+                  "value": {
+                    "stringValue": "gpt-4o"
+                  }
+                },
+                {
+                  "key": "gen_ai.provider.name",
+                  "value": {
+                    "stringValue": "openai"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.input_tokens",
+                  "value": {
+                    "intValue": "520"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.output_tokens",
+                  "value": {
+                    "intValue": "210"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.time_to_first_chunk",
+                  "value": {
+                    "doubleValue": 0.021114
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "b285ebdc744f4cd3"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "5f81509bf2ee44a3",
+              "name": "web_search",
+              "kind": 1,
+              "startTimeUnixNano": "1787109743796965000",
+              "endTimeUnixNano": "1787109743807019000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "140857bef839b766"
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "140857bef839b766"
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "bc3a74a287b6485d"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "c3321927bf1d4614",
+              "name": "web_search",
+              "kind": 1,
+              "startTimeUnixNano": "1787109743806851000",
+              "endTimeUnixNano": "1787109743817946000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "b2f1fd9ce66081c0"
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "b2f1fd9ce66081c0"
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "b285ebdc744f4cd3"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "b285ebdc744f4cd3",
+              "name": "ResearchAgent",
+              "kind": 1,
+              "startTimeUnixNano": "1787109743743462000",
+              "endTimeUnixNano": "1787109743817963000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "ResearchAgent"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "60dea32b105654a7"
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "60dea32b105654a7"
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "b2a7671a8462404d"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "6859e408464a4515",
+              "name": "web_search",
+              "kind": 1,
+              "startTimeUnixNano": "1787109743807044000",
+              "endTimeUnixNano": "1787109743817971000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "140857bef839b766"
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "140857bef839b766"
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "bc3a74a287b6485d"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "90384dadbb9046c7",
+              "name": "web_search",
+              "kind": 1,
+              "startTimeUnixNano": "1787109743818008000",
+              "endTimeUnixNano": "1787109743829126000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "140857bef839b766"
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "140857bef839b766"
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "bc3a74a287b6485d"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "bc3a74a287b6485d",
+              "name": "FactChecker",
+              "kind": 1,
+              "startTimeUnixNano": "1787109743743479000",
+              "endTimeUnixNano": "1787109743829144000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "FactChecker"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "420528a632a8a6cd"
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "420528a632a8a6cd"
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "b2a7671a8462404d"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "7c745c0f115c4cee",
+              "name": "chat gpt-4o",
+              "kind": 3,
+              "startTimeUnixNano": "1787109743850450000",
+              "endTimeUnixNano": "1787109743892795000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "chat"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.model",
+                  "value": {
+                    "stringValue": "gpt-4o"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.model",
+                  "value": {
+                    "stringValue": "gpt-4o"
+                  }
+                },
+                {
+                  "key": "gen_ai.provider.name",
+                  "value": {
+                    "stringValue": "openai"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.input_tokens",
+                  "value": {
+                    "intValue": "520"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.output_tokens",
+                  "value": {
+                    "intValue": "210"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.time_to_first_chunk",
+                  "value": {
+                    "doubleValue": 0.021154
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "a7fa18a97edb474b"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "a5cba255975d44dc",
+              "name": "web_search",
+              "kind": 1,
+              "startTimeUnixNano": "1787109743893021000",
+              "endTimeUnixNano": "1787109743904230000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "b2f1fd9ce66081c0"
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "b2f1fd9ce66081c0"
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "a7fa18a97edb474b"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "a7fa18a97edb474b",
+              "name": "ResearchAgent",
+              "kind": 1,
+              "startTimeUnixNano": "1787109743829227000",
+              "endTimeUnixNano": "1787109743904281000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "ResearchAgent"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "60dea32b105654a7"
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "60dea32b105654a7"
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "b2a7671a8462404d"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "5e0ba9c7e788497c",
+              "name": "chat gpt-4o",
+              "kind": 3,
+              "startTimeUnixNano": "1787109743926370000",
+              "endTimeUnixNano": "1787109743978561000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "chat"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.model",
+                  "value": {
+                    "stringValue": "gpt-4o"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.model",
+                  "value": {
+                    "stringValue": "gpt-4o"
+                  }
+                },
+                {
+                  "key": "gen_ai.provider.name",
+                  "value": {
+                    "stringValue": "openai"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.input_tokens",
+                  "value": {
+                    "intValue": "850"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.output_tokens",
+                  "value": {
+                    "intValue": "420"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.time_to_first_chunk",
+                  "value": {
+                    "doubleValue": 0.031189
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "9e53f749c0cd4c54"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "9e53f749c0cd4c54",
+              "name": "WriterAgent",
+              "kind": 1,
+              "startTimeUnixNano": "1787109743904426000",
+              "endTimeUnixNano": "1787109743978638000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "WriterAgent"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "eaffd8695553b626"
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "eaffd8695553b626"
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "parentSpanId": "b2a7671a8462404d"
+            },
+            {
+              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
+              "spanId": "b2a7671a8462404d",
+              "name": "Orchestrator",
+              "kind": 1,
+              "startTimeUnixNano": "1787109743743412000",
+              "endTimeUnixNano": "1787109743978668000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "Orchestrator"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "dd623bc274137fc9"
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "dd623bc274137fc9"
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

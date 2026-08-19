@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html><head>
+<title>Spandrift Analysis: head_trace.json</title>
+<style>
+
+        body { font-family: 'Segoe UI', system-ui, sans-serif; max-width: 960px;
+               margin: 2em auto; padding: 0 1em; color: #1a1a1a;
+               background: #fafafa; }
+        h1 { color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 0.3em; }
+        h2 { color: #374151; margin-top: 1.5em; }
+        table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+        th { background: #2563eb; color: white; padding: 0.6em 1em;
+             text-align: left; font-weight: 600; }
+        td { padding: 0.5em 1em; border-bottom: 1px solid #e5e7eb; }
+        tr:hover { background: #f0f4ff; }
+        .metric { display: inline-block; background: #e0e7ff; padding: 0.4em 0.8em;
+                  border-radius: 6px; margin: 0.3em; font-size: 0.95em; }
+        .warn { background: #fef3c7; border-left: 4px solid #f59e0b;
+                padding: 0.8em 1em; margin: 1em 0; border-radius: 4px; }
+        .ok { background: #d1fae5; border-left: 4px solid #10b981;
+              padding: 0.8em 1em; margin: 1em 0; border-radius: 4px; }
+        code { background: #f3f4f6; padding: 0.15em 0.4em; border-radius: 3px;
+               font-size: 0.9em; }
+        .gantt-bar-bg { background: #e5e7eb; height: 14px; border-radius: 3px; position: relative; width: 100%; min-width: 140px; }
+        .gantt-bar { position: absolute; height: 100%; border-radius: 3px; background: #2563eb; }
+        .gantt-ttft { position: absolute; height: 100%; background: #f59e0b; border-radius: 3px 0 0 3px; }
+    
+</style></head><body>
+<h1>Spandrift Analysis: head_trace.json</h1>
+<div>
+<span class="metric">Spans: 15</span>
+<span class="metric">Cost: $0.0152</span>
+<span class="metric">Wall-clock: 235ms</span>
+<span class="metric">Compute: 778ms</span>
+</div>
+<h2>Per-Agent Rollup</h2>
+<table><tr>
+<th>Agent</th><th>Cost</th><th>Wall-clock</th><th>Compute</th><th>LLM calls</th><th>Tokens (in/out)</th>
+</tr>
+<tr><td>FactChecker</td><td>$0.002075</td><td>86ms</td><td>160ms</td><td>1</td><td>350/120</td></tr>
+<tr><td>Orchestrator</td><td>$0.000000</td><td>235ms</td><td>235ms</td><td>0</td><td>0/0</td></tr>
+<tr><td>ResearchAgent</td><td>$0.006800</td><td>150ms</td><td>256ms</td><td>2</td><td>1.0k/420</td></tr>
+<tr><td>WriterAgent</td><td>$0.006325</td><td>74ms</td><td>126ms</td><td>1</td><td>850/420</td></tr>
+</table>
+<h2>Execution Waterfall & Concurrency</h2>
+<table><tr>
+<th>Task / Span</th><th>Timeline</th><th>Duration</th><th>TTFT</th><th>Cost</th></tr>
+<tr><td><code>chat gpt-4o</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:4.6%;width:13.3%;background:#2563eb;"><div class="gantt-ttft" style="width:67.1%;"></div></div></div></td><td>31ms</td><td>21ms</td><td>$0.002075</td></tr>
+<tr><td><code>web_search</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:18.0%;width:4.7%;background:#8b5cf6;"></div></div></td><td>11ms</td><td>—</td><td>—</td></tr>
+<tr><td><code>chat gpt-4o</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:9.0%;width:17.9%;background:#2563eb;"><div class="gantt-ttft" style="width:50.0%;"></div></div></div></td><td>42ms</td><td>21ms</td><td>$0.003400</td></tr>
+<tr><td><code>web_search</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:22.8%;width:4.3%;background:#8b5cf6;"></div></div></td><td>10ms</td><td>—</td><td>—</td></tr>
+<tr><td><code>web_search</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:27.0%;width:4.7%;background:#8b5cf6;"></div></div></td><td>11ms</td><td>—</td><td>—</td></tr>
+<tr><td><code>ResearchAgent</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:0.0%;width:31.7%;background:#10b981;"></div></div></td><td>75ms</td><td>—</td><td>—</td></tr>
+<tr><td><code>web_search</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:27.0%;width:4.6%;background:#8b5cf6;"></div></div></td><td>11ms</td><td>—</td><td>—</td></tr>
+<tr><td><code>web_search</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:31.7%;width:4.7%;background:#8b5cf6;"></div></div></td><td>11ms</td><td>—</td><td>—</td></tr>
+<tr><td><code>FactChecker</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:0.0%;width:36.4%;background:#10b981;"></div></div></td><td>86ms</td><td>—</td><td>—</td></tr>
+<tr><td><code>chat gpt-4o</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:45.5%;width:18.0%;background:#2563eb;"><div class="gantt-ttft" style="width:50.0%;"></div></div></div></td><td>42ms</td><td>21ms</td><td>$0.003400</td></tr>
+<tr><td><code>web_search</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:63.6%;width:4.8%;background:#8b5cf6;"></div></div></td><td>11ms</td><td>—</td><td>—</td></tr>
+<tr><td><code>ResearchAgent</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:36.5%;width:31.9%;background:#10b981;"></div></div></td><td>75ms</td><td>—</td><td>—</td></tr>
+<tr><td><code>chat gpt-4o</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:77.8%;width:22.2%;background:#2563eb;"><div class="gantt-ttft" style="width:59.8%;"></div></div></div></td><td>52ms</td><td>31ms</td><td>$0.006325</td></tr>
+<tr><td><code>WriterAgent</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:68.4%;width:31.5%;background:#10b981;"></div></div></td><td>74ms</td><td>—</td><td>—</td></tr>
+<tr><td><code>Orchestrator</code></td><td><div class="gantt-bar-bg"><div class="gantt-bar" style="left:0.0%;width:100.0%;background:#10b981;"></div></div></td><td>235ms</td><td>—</td><td>—</td></tr>
+</table>
+<h2>⚠ Duplicate Calls</h2>
+<div class="warn">FactChecker called 4× with identical input (hash: <code>43635ec</code>)  wasted: $0.000000</div>
+<div class="warn">ResearchAgent called 2× with identical input (hash: <code>377f6f9</code>)  wasted: $0.003400</div>
+<div class="warn">ResearchAgent called 2× with identical input (hash: <code>bdf540a</code>)  wasted: $0.000000</div>
+<h2>⚠ Retry/Loop Storms</h2>
+<div class="warn">chat gpt-4o: 4 calls with identical input (chain: <code>bdcf538c → 002ec832 → 7c745c0f → 5e0ba9c7</code>)</div>
+<div class="warn">web_search: 6 calls with identical input (chain: <code>c850c0c5 → 5f81509b → c3321927 → 6859e408</code>)</div>
+</body></html>

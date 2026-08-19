@@ -1,0 +1,75 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "spandrift"
+version = "0.1.0"
+description = "Local-first trace analysis and diagnostic engine for multi-agent LLM systems."
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Spandrift Authors", email = "spandrift@users.noreply.github.com" },
+]
+keywords = [
+    "opentelemetry",
+    "tracing",
+    "multi-agent",
+    "llm",
+    "langchain",
+    "langgraph",
+    "smolagents",
+    "ai-agents",
+    "observability",
+    "diagnostics",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Topic :: System :: Monitoring",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.0",
+    "polars>=1.0",
+    "rich>=13.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/spandrift-ai/spandrift"
+Repository = "https://github.com/spandrift-ai/spandrift"
+Issues = "https://github.com/spandrift-ai/spandrift/issues"
+Documentation = "https://github.com/spandrift-ai/spandrift#readme"
+
+[project.optional-dependencies]
+otel = [
+    "opentelemetry-api>=1.20",
+    "opentelemetry-sdk>=1.20",
+]
+smolagents = [
+    "smolagents>=1.0",
+    "openinference-instrumentation-smolagents>=0.1",
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "spandrift[otel]",
+]
+
+[project.scripts]
+spandrift = "spandrift.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/spandrift"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
