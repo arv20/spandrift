@@ -188,6 +188,7 @@ def _map_genai(
     # Input hash from gen_ai.input.messages
     if (v := attrs.get("gen_ai.input.messages")) is not None:
         out["input_hash"] = _hash_input(v)
+        out["input_value"] = str(v) if not isinstance(v, str) else v
 
     # TTFT / first token timestamp
     for key in (
@@ -270,6 +271,7 @@ def _map_openinference(
     # Input hash from input.value
     if (v := attrs.get("input.value")) is not None:
         out["input_hash"] = _hash_input(v)
+        out["input_value"] = str(v) if not isinstance(v, str) else v
 
     # TTFT / first token timestamp
     for key in (
@@ -507,7 +509,12 @@ def export_otlp_json(spans: list[Span]) -> dict[str, Any]:
         if s.first_token_ns and s.first_token_ns > s.start_ns:
             ttft_s = (s.first_token_ns - s.start_ns) / 1_000_000_000
             attrs.append({"key": "gen_ai.response.time_to_first_chunk", "value": {"doubleValue": ttft_s}})
-        if s.input_hash:
+        if s.input_value:
+            attrs.append({"key": "input.value", "value": {"stringValue": s.input_value}})
+            attrs.append({"key": "gen_ai.input.messages", "value": {"stringValue": s.input_value}})
+        elif s.input_hash:
+            # Fallback: if only hash is available (no raw input retained), write it
+            # so that at least exact-match duplicate detection survives round-trip.
             attrs.append({"key": "input.value", "value": {"stringValue": s.input_hash}})
             attrs.append({"key": "gen_ai.input.messages", "value": {"stringValue": s.input_hash}})
 

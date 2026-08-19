@@ -25,12 +25,12 @@
           },
           "spans": [
             {
-              "traceId": "b8d25e3dc3c14c30ba57ac40af0f01c1",
-              "spanId": "46b918e1246d477a",
+              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
+              "spanId": "146b255d127e4786",
               "name": "chat gpt-4o",
               "kind": 3,
-              "startTimeUnixNano": "1787109743605390000",
-              "endTimeUnixNano": "1787109743636516000",
+              "startTimeUnixNano": "1787155266452056000",
+              "endTimeUnixNano": "1787155266483237000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -71,22 +71,22 @@
                 {
                   "key": "gen_ai.response.time_to_first_chunk",
                   "value": {
-                    "doubleValue": 0.021081
+                    "doubleValue": 0.021089
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "5c9b39e73ee04f8e"
+              "parentSpanId": "3cb837c35f8a4cf8"
             },
             {
-              "traceId": "b8d25e3dc3c14c30ba57ac40af0f01c1",
-              "spanId": "98c0cf84289d4278",
+              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
+              "spanId": "68870b72f5a542c7",
               "name": "web_search",
               "kind": 1,
-              "startTimeUnixNano": "1787109743636599000",
-              "endTimeUnixNano": "1787109743647639000",
+              "startTimeUnixNano": "1787155266483324000",
+              "endTimeUnixNano": "1787155266493608000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -97,28 +97,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "140857bef839b766"
+                    "stringValue": "{\"args\": [\"verify claim quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "140857bef839b766"
+                    "stringValue": "{\"args\": [\"verify claim quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "5c9b39e73ee04f8e"
+              "parentSpanId": "3cb837c35f8a4cf8"
             },
             {
-              "traceId": "b8d25e3dc3c14c30ba57ac40af0f01c1",
-              "spanId": "5c9b39e73ee04f8e",
+              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
+              "spanId": "3cb837c35f8a4cf8",
               "name": "FactChecker",
               "kind": 1,
-              "startTimeUnixNano": "1787109743594229000",
-              "endTimeUnixNano": "1787109743647652000",
+              "startTimeUnixNano": "1787155266441000000",
+              "endTimeUnixNano": "1787155266493636000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -135,28 +135,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "00457e1fff66d972"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {\"simulate_retry_storm\": false}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "00457e1fff66d972"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {\"simulate_retry_storm\": false}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "aeda3ca774a64cf4"
+              "parentSpanId": "5c48ccb6663342f5"
             },
             {
-              "traceId": "b8d25e3dc3c14c30ba57ac40af0f01c1",
-              "spanId": "e1bbb9c488c44c73",
+              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
+              "spanId": "4d78d658f9b3447d",
               "name": "chat gpt-4o",
               "kind": 3,
-              "startTimeUnixNano": "1787109743615305000",
-              "endTimeUnixNano": "1787109743657453000",
+              "startTimeUnixNano": "1787155266461629000",
+              "endTimeUnixNano": "1787155266503777000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -197,22 +197,22 @@
                 {
                   "key": "gen_ai.response.time_to_first_chunk",
                   "value": {
-                    "doubleValue": 0.021082
+                    "doubleValue": 0.021076
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "926f3343b52d43a7"
+              "parentSpanId": "cbf690a6942a4b71"
             },
             {
-              "traceId": "b8d25e3dc3c14c30ba57ac40af0f01c1",
-              "spanId": "05a65e7821a84a88",
+              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
+              "spanId": "2ed8264df4504471",
               "name": "web_search",
               "kind": 1,
-              "startTimeUnixNano": "1787109743657522000",
-              "endTimeUnixNano": "1787109743668618000",
+              "startTimeUnixNano": "1787155266503849000",
+              "endTimeUnixNano": "1787155266514922000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -223,28 +223,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "b2f1fd9ce66081c0"
+                    "stringValue": "{\"args\": [\"state of the art in quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "b2f1fd9ce66081c0"
+                    "stringValue": "{\"args\": [\"state of the art in quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "926f3343b52d43a7"
+              "parentSpanId": "cbf690a6942a4b71"
             },
             {
-              "traceId": "b8d25e3dc3c14c30ba57ac40af0f01c1",
-              "spanId": "926f3343b52d43a7",
+              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
+              "spanId": "cbf690a6942a4b71",
               "name": "ResearchAgent",
               "kind": 1,
-              "startTimeUnixNano": "1787109743594210000",
-              "endTimeUnixNano": "1787109743668638000",
+              "startTimeUnixNano": "1787155266440982000",
+              "endTimeUnixNano": "1787155266514950000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -261,28 +261,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "60dea32b105654a7"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "60dea32b105654a7"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "aeda3ca774a64cf4"
+              "parentSpanId": "5c48ccb6663342f5"
             },
             {
-              "traceId": "b8d25e3dc3c14c30ba57ac40af0f01c1",
-              "spanId": "6523f068955d4d5f",
+              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
+              "spanId": "2b0dd5de7e8b464e",
               "name": "chat gpt-4o",
               "kind": 3,
-              "startTimeUnixNano": "1787109743689806000",
-              "endTimeUnixNano": "1787109743741941000",
+              "startTimeUnixNano": "1787155266536100000",
+              "endTimeUnixNano": "1787155266588192000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -323,22 +323,22 @@
                 {
                   "key": "gen_ai.response.time_to_first_chunk",
                   "value": {
-                    "doubleValue": 0.031065
+                    "doubleValue": 0.031032
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "e8fd047eaeef48f7"
+              "parentSpanId": "fbcb5b2f23464315"
             },
             {
-              "traceId": "b8d25e3dc3c14c30ba57ac40af0f01c1",
-              "spanId": "e8fd047eaeef48f7",
+              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
+              "spanId": "fbcb5b2f23464315",
               "name": "WriterAgent",
               "kind": 1,
-              "startTimeUnixNano": "1787109743668723000",
-              "endTimeUnixNano": "1787109743741965000",
+              "startTimeUnixNano": "1787155266515013000",
+              "endTimeUnixNano": "1787155266588214000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -355,28 +355,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "eaffd8695553b626"
+                    "stringValue": "{\"args\": [\"Research compiled for topic: quantum key distribution protocol security proof\", \"Verification verified for claim: quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "eaffd8695553b626"
+                    "stringValue": "{\"args\": [\"Research compiled for topic: quantum key distribution protocol security proof\", \"Verification verified for claim: quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "aeda3ca774a64cf4"
+              "parentSpanId": "5c48ccb6663342f5"
             },
             {
-              "traceId": "b8d25e3dc3c14c30ba57ac40af0f01c1",
-              "spanId": "aeda3ca774a64cf4",
+              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
+              "spanId": "5c48ccb6663342f5",
               "name": "Orchestrator",
               "kind": 1,
-              "startTimeUnixNano": "1787109743594151000",
-              "endTimeUnixNano": "1787109743741971000",
+              "startTimeUnixNano": "1787155266440931000",
+              "endTimeUnixNano": "1787155266588228000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -393,13 +393,13 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "96620cb9aaa305ae"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {\"has_redundancy\": false}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "96620cb9aaa305ae"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {\"has_redundancy\": false}}"
                   }
                 }
               ],

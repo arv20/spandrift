@@ -25,12 +25,12 @@
           },
           "spans": [
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "bdcf538c50a44b7f",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "fdff308bede44d73",
               "name": "chat gpt-4o",
               "kind": 3,
-              "startTimeUnixNano": "1787109743754314000",
-              "endTimeUnixNano": "1787109743785704000",
+              "startTimeUnixNano": "1787155266601646000",
+              "endTimeUnixNano": "1787155266632800000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -71,22 +71,22 @@
                 {
                   "key": "gen_ai.response.time_to_first_chunk",
                   "value": {
-                    "doubleValue": 0.021067
+                    "doubleValue": 0.021036
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "bc3a74a287b6485d"
+              "parentSpanId": "17f040c6beaa433b"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "c850c0c591c04510",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "9cca475e2b334425",
               "name": "web_search",
               "kind": 1,
-              "startTimeUnixNano": "1787109743785790000",
-              "endTimeUnixNano": "1787109743796880000",
+              "startTimeUnixNano": "1787155266632845000",
+              "endTimeUnixNano": "1787155266643905000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -97,28 +97,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "140857bef839b766"
+                    "stringValue": "{\"args\": [\"verify claim quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "140857bef839b766"
+                    "stringValue": "{\"args\": [\"verify claim quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "bc3a74a287b6485d"
+              "parentSpanId": "17f040c6beaa433b"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "002ec832eeef4ddc",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "55d6b345f2f340a1",
               "name": "chat gpt-4o",
               "kind": 3,
-              "startTimeUnixNano": "1787109743764571000",
-              "endTimeUnixNano": "1787109743806780000",
+              "startTimeUnixNano": "1787155266610893000",
+              "endTimeUnixNano": "1787155266653009000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -159,22 +159,22 @@
                 {
                   "key": "gen_ai.response.time_to_first_chunk",
                   "value": {
-                    "doubleValue": 0.021114
+                    "doubleValue": 0.02106
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "b285ebdc744f4cd3"
+              "parentSpanId": "ad44e30200cd4221"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "5f81509bf2ee44a3",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "568751fa85dd43c1",
               "name": "web_search",
               "kind": 1,
-              "startTimeUnixNano": "1787109743796965000",
-              "endTimeUnixNano": "1787109743807019000",
+              "startTimeUnixNano": "1787155266643947000",
+              "endTimeUnixNano": "1787155266654085000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -185,28 +185,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "140857bef839b766"
+                    "stringValue": "{\"args\": [\"verify claim quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "140857bef839b766"
+                    "stringValue": "{\"args\": [\"verify claim quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "bc3a74a287b6485d"
+              "parentSpanId": "17f040c6beaa433b"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "c3321927bf1d4614",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "59a8be57669848e4",
               "name": "web_search",
               "kind": 1,
-              "startTimeUnixNano": "1787109743806851000",
-              "endTimeUnixNano": "1787109743817946000",
+              "startTimeUnixNano": "1787155266653043000",
+              "endTimeUnixNano": "1787155266664068000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -217,28 +217,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "b2f1fd9ce66081c0"
+                    "stringValue": "{\"args\": [\"state of the art in quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "b2f1fd9ce66081c0"
+                    "stringValue": "{\"args\": [\"state of the art in quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "b285ebdc744f4cd3"
+              "parentSpanId": "ad44e30200cd4221"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "b285ebdc744f4cd3",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "ad44e30200cd4221",
               "name": "ResearchAgent",
               "kind": 1,
-              "startTimeUnixNano": "1787109743743462000",
-              "endTimeUnixNano": "1787109743817963000",
+              "startTimeUnixNano": "1787155266590543000",
+              "endTimeUnixNano": "1787155266664074000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -255,28 +255,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "60dea32b105654a7"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "60dea32b105654a7"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "b2a7671a8462404d"
+              "parentSpanId": "9a25ca8488c0468a"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "6859e408464a4515",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "2816d1dbb4b24b29",
               "name": "web_search",
               "kind": 1,
-              "startTimeUnixNano": "1787109743807044000",
-              "endTimeUnixNano": "1787109743817971000",
+              "startTimeUnixNano": "1787155266654098000",
+              "endTimeUnixNano": "1787155266664121000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -287,28 +287,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "140857bef839b766"
+                    "stringValue": "{\"args\": [\"verify claim quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "140857bef839b766"
+                    "stringValue": "{\"args\": [\"verify claim quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "bc3a74a287b6485d"
+              "parentSpanId": "17f040c6beaa433b"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "90384dadbb9046c7",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "8ee5dfda8cb3433d",
               "name": "web_search",
               "kind": 1,
-              "startTimeUnixNano": "1787109743818008000",
-              "endTimeUnixNano": "1787109743829126000",
+              "startTimeUnixNano": "1787155266664135000",
+              "endTimeUnixNano": "1787155266675163000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -319,28 +319,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "140857bef839b766"
+                    "stringValue": "{\"args\": [\"verify claim quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "140857bef839b766"
+                    "stringValue": "{\"args\": [\"verify claim quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "bc3a74a287b6485d"
+              "parentSpanId": "17f040c6beaa433b"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "bc3a74a287b6485d",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "17f040c6beaa433b",
               "name": "FactChecker",
               "kind": 1,
-              "startTimeUnixNano": "1787109743743479000",
-              "endTimeUnixNano": "1787109743829144000",
+              "startTimeUnixNano": "1787155266590558000",
+              "endTimeUnixNano": "1787155266675170000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -357,28 +357,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "420528a632a8a6cd"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {\"simulate_retry_storm\": true}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "420528a632a8a6cd"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {\"simulate_retry_storm\": true}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "b2a7671a8462404d"
+              "parentSpanId": "9a25ca8488c0468a"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "7c745c0f115c4cee",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "b69799d447f24df6",
               "name": "chat gpt-4o",
               "kind": 3,
-              "startTimeUnixNano": "1787109743850450000",
-              "endTimeUnixNano": "1787109743892795000",
+              "startTimeUnixNano": "1787155266696277000",
+              "endTimeUnixNano": "1787155266738389000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -419,22 +419,22 @@
                 {
                   "key": "gen_ai.response.time_to_first_chunk",
                   "value": {
-                    "doubleValue": 0.021154
+                    "doubleValue": 0.021056
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "a7fa18a97edb474b"
+              "parentSpanId": "beaf3f9e4d3c4fcc"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "a5cba255975d44dc",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "78a07fc983244c0f",
               "name": "web_search",
               "kind": 1,
-              "startTimeUnixNano": "1787109743893021000",
-              "endTimeUnixNano": "1787109743904230000",
+              "startTimeUnixNano": "1787155266738425000",
+              "endTimeUnixNano": "1787155266749480000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -445,28 +445,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "b2f1fd9ce66081c0"
+                    "stringValue": "{\"args\": [\"state of the art in quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "b2f1fd9ce66081c0"
+                    "stringValue": "{\"args\": [\"state of the art in quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "a7fa18a97edb474b"
+              "parentSpanId": "beaf3f9e4d3c4fcc"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "a7fa18a97edb474b",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "beaf3f9e4d3c4fcc",
               "name": "ResearchAgent",
               "kind": 1,
-              "startTimeUnixNano": "1787109743829227000",
-              "endTimeUnixNano": "1787109743904281000",
+              "startTimeUnixNano": "1787155266675218000",
+              "endTimeUnixNano": "1787155266749504000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -483,28 +483,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "60dea32b105654a7"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "60dea32b105654a7"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "b2a7671a8462404d"
+              "parentSpanId": "9a25ca8488c0468a"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "5e0ba9c7e788497c",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "d1701a70bef64954",
               "name": "chat gpt-4o",
               "kind": 3,
-              "startTimeUnixNano": "1787109743926370000",
-              "endTimeUnixNano": "1787109743978561000",
+              "startTimeUnixNano": "1787155266770596000",
+              "endTimeUnixNano": "1787155266822685000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -545,22 +545,22 @@
                 {
                   "key": "gen_ai.response.time_to_first_chunk",
                   "value": {
-                    "doubleValue": 0.031189
+                    "doubleValue": 0.031037
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "9e53f749c0cd4c54"
+              "parentSpanId": "65a6df5281c54242"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "9e53f749c0cd4c54",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "65a6df5281c54242",
               "name": "WriterAgent",
               "kind": 1,
-              "startTimeUnixNano": "1787109743904426000",
-              "endTimeUnixNano": "1787109743978638000",
+              "startTimeUnixNano": "1787155266749519000",
+              "endTimeUnixNano": "1787155266822713000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -577,28 +577,28 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "eaffd8695553b626"
+                    "stringValue": "{\"args\": [\"Research compiled for topic: quantum key distribution protocol security proof\", \"Verification verified for claim: quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "eaffd8695553b626"
+                    "stringValue": "{\"args\": [\"Research compiled for topic: quantum key distribution protocol security proof\", \"Verification verified for claim: quantum key distribution protocol security proof\"], \"kwargs\": {}}"
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "b2a7671a8462404d"
+              "parentSpanId": "9a25ca8488c0468a"
             },
             {
-              "traceId": "dd9ac3a4116149be8de9a056c0788d62",
-              "spanId": "b2a7671a8462404d",
+              "traceId": "b005a6bde4474ce4bb4458fbb2eaee16",
+              "spanId": "9a25ca8488c0468a",
               "name": "Orchestrator",
               "kind": 1,
-              "startTimeUnixNano": "1787109743743412000",
-              "endTimeUnixNano": "1787109743978668000",
+              "startTimeUnixNano": "1787155266590497000",
+              "endTimeUnixNano": "1787155266822720000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -615,13 +615,13 @@
                 {
                   "key": "input.value",
                   "value": {
-                    "stringValue": "dd623bc274137fc9"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {\"has_redundancy\": true}}"
                   }
                 },
                 {
                   "key": "gen_ai.input.messages",
                   "value": {
-                    "stringValue": "dd623bc274137fc9"
+                    "stringValue": "{\"args\": [\"quantum key distribution protocol security proof\"], \"kwargs\": {\"has_redundancy\": true}}"
                   }
                 }
               ],

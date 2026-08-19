@@ -2,7 +2,7 @@
 
 Listens for standard OpenTelemetry OTLP JSON HTTP trace exports on /v1/traces
 (default port: 4318). Compatible with any OpenTelemetry SDK:
-    OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318"
+    OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318"
     OTEL_EXPORTER_OTLP_PROTOCOL="http/json"
 """
 
@@ -147,7 +147,7 @@ class OTLPTraceServer(ThreadingHTTPServer):
 
 
 def start_otlp_server(
-    host: str = "0.0.0.0",
+    host: str = "127.0.0.1",
     port: int = 4318,
     *,
     save_dir: str | Path | None = None,

@@ -6,10 +6,10 @@ It is **not** a new observability platform. Frameworks like `smolagents` (with `
 
 - **Rollup across concurrent branches**: rollup cost and compute without double-counting parallel tasks or inflating non-contiguous agent executions (via interval union).
 - **Duplicate call detection**: same agent called with the exact same input multiple times in a single trace, with recursive subtree cost rollups.
-- **Fuzzy / semantic retry storms**: catches identical retries and slightly diverging loops (e.g. "Attempt 1: query" vs "Attempt 2: query") using token Jaccard similarity.
+- **Fuzzy / semantic retry storms**: catches identical retries and slightly diverging loops (e.g. "Attempt 1: query" vs "Attempt 2: query") using token Jaccard similarity. Fuzzy detection requires raw input strings; for OTLP-ingested traces it works when `input.value` / `gen_ai.input.messages` attributes are present. For the `@profile_agent` decorator path, raw input is always retained automatically.
 - **Latency & TTFT outliers**: provider-side slowdowns or Time-to-First-Token degradation per model.
 - **Visual execution waterfall**: ASCII/ANSI Gantt chart in the terminal showing parallel fan-outs and TTFT vs generation times.
-- **Real-time OTLP Ingest Server**: `spandrift listen` receives traces directly from standard OpenTelemetry exporters.
+- **Real-time OTLP receiver**: `spandrift listen` accepts traces from standard OpenTelemetry exporters on localhost (loopback-only by default).
 - **CI regression gate & PR Bot**: `spandrift diff` and `action.yml` check cost/latency regressions between runs, post review comments, and gate pull requests.
 
 ---
@@ -44,21 +44,7 @@ pip install "spandrift[otel,smolagents]"
 
 ## CLI Usage
 
-### 1. Real-Time OTLP Ingest Server (`spandrift listen`)
-
-Start a background OTLP receiver on port 4318:
-```bash
-spandrift listen --port 4318 --save-dir traces/
-```
-
-Point any standard OpenTelemetry application to Spandrift without manual JSON dumps:
-```bash
-export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318"
-export OTEL_EXPORTER_OTLP_PROTOCOL="http/json"
-python my_multi_agent_app.py
-```
-
-### 2. Analyze a Trace
+### 1. Analyze a Trace
 
 ```bash
 spandrift analyze trace.json
@@ -69,7 +55,7 @@ Generate an optional self-contained HTML report:
 spandrift analyze trace.json --html report.html
 ```
 
-### 3. Compare Two Runs in CI (`spandrift diff`)
+### 2. Compare Two Runs in CI (`spandrift diff`)
 
 ```bash
 spandrift diff base.json head.json --cost-threshold 0.10 --latency-threshold 0.20
@@ -77,6 +63,24 @@ spandrift diff base.json head.json --cost-threshold 0.10 --latency-threshold 0.2
 - `--cost-threshold 0.10`: Fail if any agent's cost increases by >10%.
 - `--latency-threshold 0.20`: Fail if any agent's latency increases by >20%.
 - Exits with returncode `1` if thresholds are exceeded (ideal for GitHub Actions).
+
+### 3. Real-Time OTLP Receiver (`spandrift listen`)
+
+For convenience during development, `spandrift listen` starts a loopback-only
+HTTP receiver that accepts standard OTLP JSON trace exports:
+
+```bash
+spandrift listen --port 4318 --save-dir traces/
+```
+
+Point any OpenTelemetry-instrumented application at it:
+```bash
+export OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318"
+export OTEL_EXPORTER_OTLP_PROTOCOL="http/json"
+python my_multi_agent_app.py
+```
+
+The listener binds to `127.0.0.1` by default (loopback only). Use `--host 0.0.0.0` to accept connections from other machines.
 
 ---
 

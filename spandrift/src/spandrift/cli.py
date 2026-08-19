@@ -100,15 +100,17 @@ def diff(
 
 
 @main.command()
-@click.option("--host", default="0.0.0.0", help="Host interface to bind on (default: 0.0.0.0).")
+@click.option("--host", default="127.0.0.1", help="Loopback-only by default (127.0.0.1). Use 0.0.0.0 to accept connections from other machines.")
 @click.option("--port", "-p", default=4318, type=int, help="Port to listen on (default: 4318).")
 @click.option("--save-dir", "-s", type=click.Path(path_type=Path), help="Directory to save received OTLP traces.")
 @click.option("--auto-analyze/--no-auto-analyze", default=True, help="Automatically print diagnostic report on trace arrival.")
 def listen(host: str, port: int, save_dir: Path | None, auto_analyze: bool) -> None:
-    """Start an OTLP trace receiver on /v1/traces (default: port 4318).
+    """Start a loopback-only OTLP trace receiver on /v1/traces (default: 127.0.0.1:4318).
+
+    Binds to localhost by default. Use --host 0.0.0.0 to accept remote connections.
 
     Developers can configure their OpenTelemetry SDK with:
-        export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318"
+        export OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318"
         export OTEL_EXPORTER_OTLP_PROTOCOL="http/json"
     """
     from spandrift.server import start_otlp_server
