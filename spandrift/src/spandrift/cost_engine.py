@@ -1,16 +1,18 @@
-# Pricing data should ideally come from an open-source live dataset like
-# genai-prices (github.com/pydantic/genai-prices). We evaluated genai-prices
-# v0.1.4 for v1, but its Usage API does not yet accept cache_read_tokens or
-# cache_write_tokens — it silently drops them — so cache-tiered cost
-# calculations cannot be delegated to it today. Once genai-prices supports
-# cache token breakdown in its Usage type, this module should switch to it.
+# genai-prices (github.com/pydantic/genai-prices) v0.1.4 DOES support
+# cache_read_tokens and cache_write_tokens in its Usage() constructor, and
+# calc_price() correctly subtracts both from input_tokens before pricing.
+# We could switch to it as the primary backend to avoid price staleness.
 #
-# Until then, we bundle a static table covering common models with full
-# ephemeral cache tiering. Users can extend or override it via the
-# SPANDRIFT_PRICES_PATH env var pointing to a JSON file with the same shape.
+# For v1 we keep a static table because:
+#   1. It lets us unit-test exact pricing without an external dependency.
+#   2. genai-prices' extract_usage() pipeline (which maps provider-specific
+#      field names like cache_creation_input_tokens) adds indirection that
+#      would need its own integration tests against each provider's format.
+# This is a convenience trade-off, not a capability gap.
 #
-# Prices verified as of: 2025-06-01. If you notice a stale entry, please
-# open an issue or PR, or override via SPANDRIFT_PRICES_PATH.
+# Prices verified as of: 2026-08-19 (commit date).
+# If you notice a stale entry, open an issue/PR or override via
+# SPANDRIFT_PRICES_PATH.
 
 """Per-span cost computation against a structured tiered pricing table."""
 
@@ -303,8 +305,15 @@ def compute_cost(span: Span) -> float | None:
     if pricing is None:
         return None
 
-    # Calculate uncached vs cached input tokens
-    uncached_input_tokens = max(0, span.input_tokens - span.cache_read_tokens)
+    # input_tokens from OTel is total prompt tokens INCLUDING all cached
+    # portions.  Subtract both cache-read and cache-write to get the truly
+    # uncached tokens billed at standard rate.  Without this subtraction,
+    # cache_write_tokens get billed at both the standard input rate AND the
+    # cache_write rate — the exact double-counting bug seen in pydantic-ai
+    # #4364 / langfuse #12306.
+    uncached_input_tokens = max(
+        0, span.input_tokens - span.cache_read_tokens - span.cache_write_tokens
+    )
 
     cost = (
         uncached_input_tokens * pricing.input_per_mtok

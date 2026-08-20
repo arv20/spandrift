@@ -25,12 +25,12 @@
           },
           "spans": [
             {
-              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
-              "spanId": "146b255d127e4786",
+              "traceId": "c798e1b8993342209644185593aa8150",
+              "spanId": "0989c1c77c404363",
               "name": "chat gpt-4o",
               "kind": 3,
-              "startTimeUnixNano": "1787155266452056000",
-              "endTimeUnixNano": "1787155266483237000",
+              "startTimeUnixNano": "1787187329944909000",
+              "endTimeUnixNano": "1787187329976188000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -71,22 +71,22 @@
                 {
                   "key": "gen_ai.response.time_to_first_chunk",
                   "value": {
-                    "doubleValue": 0.021089
+                    "doubleValue": 0.021083
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "3cb837c35f8a4cf8"
+              "parentSpanId": "3818ee128b0d4c4c"
             },
             {
-              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
-              "spanId": "68870b72f5a542c7",
+              "traceId": "c798e1b8993342209644185593aa8150",
+              "spanId": "157bf82c72324df1",
               "name": "web_search",
               "kind": 1,
-              "startTimeUnixNano": "1787155266483324000",
-              "endTimeUnixNano": "1787155266493608000",
+              "startTimeUnixNano": "1787187329976244000",
+              "endTimeUnixNano": "1787187329987315000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -110,15 +110,15 @@
               "status": {
                 "code": 0
               },
-              "parentSpanId": "3cb837c35f8a4cf8"
+              "parentSpanId": "3818ee128b0d4c4c"
             },
             {
-              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
-              "spanId": "3cb837c35f8a4cf8",
+              "traceId": "c798e1b8993342209644185593aa8150",
+              "spanId": "3818ee128b0d4c4c",
               "name": "FactChecker",
               "kind": 1,
-              "startTimeUnixNano": "1787155266441000000",
-              "endTimeUnixNano": "1787155266493636000",
+              "startTimeUnixNano": "1787187329933797000",
+              "endTimeUnixNano": "1787187329987325000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -148,15 +148,15 @@
               "status": {
                 "code": 0
               },
-              "parentSpanId": "5c48ccb6663342f5"
+              "parentSpanId": "e5d3705dae4d49d4"
             },
             {
-              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
-              "spanId": "4d78d658f9b3447d",
+              "traceId": "c798e1b8993342209644185593aa8150",
+              "spanId": "64da6cf6e53f4c87",
               "name": "chat gpt-4o",
               "kind": 3,
-              "startTimeUnixNano": "1787155266461629000",
-              "endTimeUnixNano": "1787155266503777000",
+              "startTimeUnixNano": "1787187329954877000",
+              "endTimeUnixNano": "1787187329995632000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -197,22 +197,22 @@
                 {
                   "key": "gen_ai.response.time_to_first_chunk",
                   "value": {
-                    "doubleValue": 0.021076
+                    "doubleValue": 0.020123
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "cbf690a6942a4b71"
+              "parentSpanId": "d142c68c26ea4002"
             },
             {
-              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
-              "spanId": "2ed8264df4504471",
+              "traceId": "c798e1b8993342209644185593aa8150",
+              "spanId": "60763c894449452b",
               "name": "web_search",
               "kind": 1,
-              "startTimeUnixNano": "1787155266503849000",
-              "endTimeUnixNano": "1787155266514922000",
+              "startTimeUnixNano": "1787187329995674000",
+              "endTimeUnixNano": "1787187330006709000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -236,15 +236,15 @@
               "status": {
                 "code": 0
               },
-              "parentSpanId": "cbf690a6942a4b71"
+              "parentSpanId": "d142c68c26ea4002"
             },
             {
-              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
-              "spanId": "cbf690a6942a4b71",
+              "traceId": "c798e1b8993342209644185593aa8150",
+              "spanId": "d142c68c26ea4002",
               "name": "ResearchAgent",
               "kind": 1,
-              "startTimeUnixNano": "1787155266440982000",
-              "endTimeUnixNano": "1787155266514950000",
+              "startTimeUnixNano": "1787187329933778000",
+              "endTimeUnixNano": "1787187330006718000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -274,15 +274,15 @@
               "status": {
                 "code": 0
               },
-              "parentSpanId": "5c48ccb6663342f5"
+              "parentSpanId": "e5d3705dae4d49d4"
             },
             {
-              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
-              "spanId": "2b0dd5de7e8b464e",
+              "traceId": "c798e1b8993342209644185593aa8150",
+              "spanId": "9b9c0ff9d0da4884",
               "name": "chat gpt-4o",
               "kind": 3,
-              "startTimeUnixNano": "1787155266536100000",
-              "endTimeUnixNano": "1787155266588192000",
+              "startTimeUnixNano": "1787187330027803000",
+              "endTimeUnixNano": "1787187330079918000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -323,22 +323,22 @@
                 {
                   "key": "gen_ai.response.time_to_first_chunk",
                   "value": {
-                    "doubleValue": 0.031032
+                    "doubleValue": 0.031039
                   }
                 }
               ],
               "status": {
                 "code": 0
               },
-              "parentSpanId": "fbcb5b2f23464315"
+              "parentSpanId": "13a869354a2b494f"
             },
             {
-              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
-              "spanId": "fbcb5b2f23464315",
+              "traceId": "c798e1b8993342209644185593aa8150",
+              "spanId": "13a869354a2b494f",
               "name": "WriterAgent",
               "kind": 1,
-              "startTimeUnixNano": "1787155266515013000",
-              "endTimeUnixNano": "1787155266588214000",
+              "startTimeUnixNano": "1787187330006770000",
+              "endTimeUnixNano": "1787187330079937000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -368,15 +368,15 @@
               "status": {
                 "code": 0
               },
-              "parentSpanId": "5c48ccb6663342f5"
+              "parentSpanId": "e5d3705dae4d49d4"
             },
             {
-              "traceId": "5146ff3c916b4df1b8885b01a6cc2adb",
-              "spanId": "5c48ccb6663342f5",
+              "traceId": "c798e1b8993342209644185593aa8150",
+              "spanId": "e5d3705dae4d49d4",
               "name": "Orchestrator",
               "kind": 1,
-              "startTimeUnixNano": "1787155266440931000",
-              "endTimeUnixNano": "1787155266588228000",
+              "startTimeUnixNano": "1787187329933725000",
+              "endTimeUnixNano": "1787187330079949000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",

@@ -60,8 +60,12 @@ def test_pricing_prefix_match():
 
 def test_pricing_cache_read_and_write():
     # claude-3-5-sonnet-20241022: input=$3.00, output=$15.00, cache_read=$0.30, cache_write=$3.75
-    # Total input: 100k, 50k cached -> 50k uncached ($0.15) + 50k cached ($0.015)
-    # Output: 10k ($0.15) + Cache write: 20k ($0.075) -> Total = $0.39
+    # Total input: 100k.  50k cache-read, 20k cache-write, so:
+    #   uncached = 100k - 50k - 20k = 30k  ($0.09)
+    #   cache-read = 50k              ($0.015)
+    #   cache-write = 20k             ($0.075)
+    #   output = 10k                  ($0.15)
+    #   Total = $0.33
     span = make_llm_span(
         "claude-3-5-sonnet-20241022",
         provider="anthropic",
@@ -72,7 +76,7 @@ def test_pricing_cache_read_and_write():
     )
     cost = compute_cost(span)
     assert cost is not None
-    assert pytest.approx(cost, rel=1e-4) == 0.39
+    assert pytest.approx(cost, rel=1e-4) == 0.33
 
 
 def test_non_llm_span_cost_is_none():
