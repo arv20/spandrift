@@ -286,9 +286,13 @@ def detect_duplicates(df: pl.DataFrame) -> pl.DataFrame:
 
 
 def token_jaccard_similarity(s1: str | None, s2: str | None) -> float:
-    """Compute token-level Jaccard overlap similarity between two strings."""
+    """Compute token-level Jaccard overlap similarity between two strings.
+
+    Returns 0.0 when either input is missing — absent data is never a
+    similarity signal.
+    """
     if not s1 or not s2:
-        return 1.0 if s1 == s2 else 0.0
+        return 0.0
     if s1 == s2:
         return 1.0
     toks1 = set(s1.lower().split())
@@ -335,14 +339,15 @@ def detect_retry_storms(
     storms: list[RetryStorm] = []
 
     grouped = sorted_df.select(
-        "name", "span_id", "input_hash", "input_value"
+        "name", "span_id", "input_hash", "input_value", "agent_name"
     ).to_dicts()
 
-    by_name: dict[str, list[dict[str, Any]]] = {}
+    by_name: dict[tuple[str, str | None], list[dict[str, Any]]] = {}
     for row in grouped:
-        by_name.setdefault(str(row["name"]), []).append(row)
+        key = (str(row["name"]), str(row["agent_name"]) if row.get("agent_name") is not None else None)
+        by_name.setdefault(key, []).append(row)
 
-    for name, rows in by_name.items():
+    for (name, _agent_name), rows in by_name.items():
         if len(rows) < threshold:
             continue
 

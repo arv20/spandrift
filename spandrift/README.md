@@ -29,7 +29,7 @@ Local-first, OpenTelemetry-native trace analyzer for multi-agent LLM systems: ca
   ResearchAgent called 2× with identical input  wasted: $0.003400
 
 ⚠ Retry/Loop Storms
-  chat gpt-4o: 4 calls with identical input
+  web_search: 4 calls with identical input
 ```
 
 This is **not** a new observability platform. Frameworks like smolagents and Pydantic AI already emit standard OpenTelemetry spans; tools like Phoenix, Langfuse, and Logfire already do general tracing well. Spandrift consumes those standard spans and focuses on diagnostics specific to multi-agent orchestration that general-purpose backends don't foreground.
@@ -166,7 +166,7 @@ jobs:
 
 ## Known Trade-offs
 
-- **Retry-storm detection on LLM spans** requires `input.value` or `gen_ai.input.messages` attributes on the span. Agent and tool spans from smolagents/OpenInference carry these, but bare LLM spans from the OTel GenAI conventions typically do not — so two LLM calls to the same model with different prompts but no input attribute will be treated as identical. The `@profile_agent` path is unaffected (raw input is always retained).
+- **Detection coverage on spans without captured inputs**: Duplicate and retry-storm detection require `input.value` or `gen_ai.input.messages` attributes on the span (or exact input hashes). Spans lacking input telemetry (such as bare LLM spans from minimal OTel instrumentation) are never treated as matches and will not be flagged. The `@profile_agent` decorator path automatically captures raw inputs.
 - **Pricing is a static rate table** in `cost_engine.py`, verified as of 2026-08-19. Override with `SPANDRIFT_PRICES_PATH="custom_prices.json"` for new models or negotiated rates. [genai-prices](https://github.com/pydantic/genai-prices) is a compatible alternative backend for v2.
 - **The LangChain/LangGraph callback handler** (`spandrift.adapters.SpandriftCallbackHandler`) is experimental and untested against real LangChain runs. LangSmith is the first-party option there.
 

@@ -264,6 +264,47 @@ def test_detect_fuzzy_retry_storms():
     assert storms[0].similarity >= 0.80
 
 
+def test_missing_input_not_flagged_as_duplicate_or_retry_storm():
+    """Ensure spans with missing input_value and input_hash are never falsely flagged.
+
+    Absent data must not be treated as a similarity signal (token_jaccard_similarity
+    returns 0.0 when either input is None).
+    """
+    from spandrift.analysis import token_jaccard_similarity
+
+    # Jaccard similarity unit checks on None
+    assert token_jaccard_similarity(None, None) == 0.0
+    assert token_jaccard_similarity("some query", None) == 0.0
+    assert token_jaccard_similarity(None, "some query") == 0.0
+    assert token_jaccard_similarity("", "") == 0.0
+
+    # 4 consecutive same-named spans with NO input_hash and NO input_value
+    spans = [
+        Span(
+            trace_id="t1",
+            span_id=f"llm_{i}",
+            parent_span_id=None,
+            name="chat gpt-4o",
+            kind=SpanKind.LLM,
+            agent_name="FactChecker",
+            start_ns=i * 1000,
+            end_ns=(i + 1) * 1000,
+            input_hash=None,
+            input_value=None,
+        )
+        for i in range(4)
+    ]
+    df = spans_to_dataframe(spans)
+
+    # Must NOT be flagged as duplicates
+    dups = detect_duplicates(df)
+    assert dups.is_empty()
+
+    # Must NOT be flagged as a retry storm
+    storms = detect_retry_storms(df, threshold=2)
+    assert len(storms) == 0
+
+
 def test_detect_latency_outliers():
     # Model group with baseline durations around 100ms, and one outlier at 1000ms
     spans = [
