@@ -44,10 +44,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/spandrift-ai/spandrift"
-Repository = "https://github.com/spandrift-ai/spandrift"
-Issues = "https://github.com/spandrift-ai/spandrift/issues"
-Documentation = "https://github.com/spandrift-ai/spandrift#readme"
+Homepage = "https://github.com/arv20/opensourceproject"
+Repository = "https://github.com/arv20/opensourceproject"
+Issues = "https://github.com/arv20/opensourceproject/issues"
+Documentation = "https://github.com/arv20/opensourceproject#readme"
 
 [project.optional-dependencies]
 otel = [

@@ -1,169 +1,107 @@
 # spandrift
 
-A local-first Python CLI tool that analyzes execution traces from multi-agent LLM systems and flags orchestration-specific problems.
+Local-first, OpenTelemetry-native trace analyzer for multi-agent LLM systems: catches redundant calls, retry storms, and cost regressions, and gates CI on them.
 
-It is **not** a new observability platform. Frameworks like `smolagents` (with `openinference-instrumentation-smolagents`) and `Pydantic AI` already emit standard OpenTelemetry spans, and tools like Phoenix, Langfuse, or Logfire do general tracing and dashboarding well. `spandrift` consumes standard OTel spans and focuses purely on diagnostics specific to multi-agent systems that general-purpose tracing backends don't foreground:
+```
+╭──────────────────── Spandrift Analysis: head_trace.json ─────────────────────╮
+│ Total spans: 15    Total cost: $0.0152                                       │
+│ Wall-clock: 234ms   Compute time: 775ms                                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+                      Execution Waterfall & Concurrency
+ Span / Task         Timeline (░=TTFT, █=Exec)     Duration  TTFT       Cost
+ Orchestrator        ████████████████████████████     234ms     —          —
+  ├─ ResearchAgent   ████████                          74ms     —          —
+  │  ├─ chat gpt-4o    ░░░██                           42ms  21ms  $0.003400
+  │  └─ web_search          █                          11ms     —          —
+  ├─ FactChecker     ██████████                        85ms     —          —
+  │  ├─ chat gpt-4o   ░░██                             31ms  21ms  $0.002075
+  │  ├─ web_search        █                            11ms     —          —
+  │  ├─ web_search         █                           10ms     —          —
+  │  ├─ web_search          █                          11ms     —          —
+  │  └─ web_search           ██                        11ms     —          —
+  ├─ ResearchAgent             █████████               75ms     —          —
+  │  ├─ chat gpt-4o              ░░░██                 42ms  21ms  $0.003400
+  │  └─ web_search                    ██               11ms     —          —
+  └─ WriterAgent                        ████████       74ms     —          —
+     └─ chat gpt-4o                       ░░░░██       52ms  31ms  $0.006325
 
-- **Rollup across concurrent branches**: rollup cost and compute without double-counting parallel tasks or inflating non-contiguous agent executions (via interval union).
-- **Duplicate call detection**: same agent called with the exact same input multiple times in a single trace, with recursive subtree cost rollups.
-- **Fuzzy / semantic retry storms**: catches identical retries and slightly diverging loops (e.g. "Attempt 1: query" vs "Attempt 2: query") using token Jaccard similarity. Fuzzy detection requires raw input strings; for OTLP-ingested traces it works when `input.value` / `gen_ai.input.messages` attributes are present. For the `@profile_agent` decorator path, raw input is always retained automatically.
-- **Latency & TTFT outliers**: provider-side slowdowns or Time-to-First-Token degradation per model.
-- **Visual execution waterfall**: ASCII/ANSI Gantt chart in the terminal showing parallel fan-outs and TTFT vs generation times.
-- **Real-time OTLP receiver**: `spandrift listen` accepts traces from standard OpenTelemetry exporters on localhost (loopback-only by default).
-- **CI regression gate & PR Bot**: `spandrift diff` and `action.yml` check cost/latency regressions between runs, post review comments, and gate pull requests.
+⚠ Duplicate Calls
+  ResearchAgent called 2× with identical input  wasted: $0.003400
 
----
+⚠ Retry/Loop Storms
+  chat gpt-4o: 4 calls with identical input
+```
 
-## Why These Design Choices?
+This is **not** a new observability platform. Frameworks like smolagents and Pydantic AI already emit standard OpenTelemetry spans; tools like Phoenix, Langfuse, and Logfire already do general tracing well. Spandrift consumes those standard spans and focuses on diagnostics specific to multi-agent orchestration that general-purpose backends don't foreground.
 
-### 1. Concurrent Span Attribution via `contextvars.ContextVar`
-When sub-agents run concurrently via `asyncio.gather` or `asyncio.TaskGroup`, each task needs to know its parent span. A naive approach that stores the "active span" in a shared module variable fails immediately: Task A sets its span, yields at an `await`, Task B sets its span, and when Task A resumes, its child calls get attributed to Task B.
-
-We use `contextvars.ContextVar` with token-based reset. When `asyncio.create_task()` (or `gather`/`TaskGroup`) spawns a task, CPython captures a shallow copy-on-write snapshot of the caller's context (backed by a HAMT). Mutating `_current_span` in Task A creates a path copy in Task A's trie in $O(1)$ time without modifying Task B's context.
-
-### 2. Columnar Aggregation with Polars
-Span analysis is fundamentally batch aggregation: computing grouped metrics (cost per agent, p95 latencies per model, duplicate counts per input hash) over a table of spans. Polars' lazy execution and columnar expressions make these operations concise and fast without maintaining custom grouping loops.
-
-### 3. Ephemeral Cache Token Tiering
-Modern agent frameworks rely heavily on prompt caching (Anthropic prompt cache, OpenAI cached prompt tokens, DeepSeek prefix caching). `spandrift` automatically bills uncached prompt tokens at standard rates, cache-read tokens at discounted rates (e.g. 90% discount for Claude, 50% for GPT-4o, 75% for DeepSeek), and cache-write tokens at creation multipliers.
-
----
-
-## Installation
+## Quickstart
 
 ```bash
 pip install spandrift
-```
-
-To include optional OpenTelemetry SDK and `smolagents` dependencies:
-```bash
-pip install "spandrift[otel,smolagents]"
-```
-
----
-
-## CLI Usage
-
-### 1. Analyze a Trace
-
-```bash
 spandrift analyze trace.json
 ```
 
-Generate an optional self-contained HTML report:
+Generate an HTML report:
 ```bash
 spandrift analyze trace.json --html report.html
 ```
 
-### 2. Compare Two Runs in CI (`spandrift diff`)
+---
+
+## What It Catches
+
+- **Duplicate calls**: same agent called with the exact same input multiple times, with recursive subtree cost rollup showing wasted spend.
+- **Retry / loop storms**: identical or near-identical calls in sequence (fuzzy Jaccard matching on raw inputs, not just exact hash).
+- **Latency & TTFT outliers**: per-model outlier detection on Time-to-First-Token or total duration.
+- **Cost regressions between runs**: `spandrift diff base.json head.json` compares per-agent cost and latency, exits non-zero when thresholds are exceeded.
+
+## CLI Commands
+
+### `spandrift analyze`
 
 ```bash
-spandrift diff base.json head.json --cost-threshold 0.10 --latency-threshold 0.20
+spandrift analyze trace.json                          # terminal report
+spandrift analyze trace.json --html report.html       # + HTML report
 ```
-- `--cost-threshold 0.10`: Fail if any agent's cost increases by >10%.
-- `--latency-threshold 0.20`: Fail if any agent's latency increases by >20%.
-- Exits with returncode `1` if thresholds are exceeded (ideal for GitHub Actions).
 
-### 3. Real-Time OTLP Receiver (`spandrift listen`)
+### `spandrift diff`
 
-For convenience during development, `spandrift listen` starts a loopback-only
-HTTP receiver that accepts standard OTLP JSON trace exports:
+```bash
+spandrift diff base.json head.json --cost-threshold 0.10 --latency-threshold 0.20 --exit-code
+```
+
+Exits `1` if any agent's cost increases >10% or latency >20%. Designed for CI gating.
+
+### `spandrift listen` (optional convenience)
+
+Starts a loopback-only HTTP receiver for OTLP JSON trace exports:
 
 ```bash
 spandrift listen --port 4318 --save-dir traces/
 ```
 
-Point any OpenTelemetry-instrumented application at it:
 ```bash
 export OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318"
 export OTEL_EXPORTER_OTLP_PROTOCOL="http/json"
 python my_multi_agent_app.py
 ```
 
-The listener binds to `127.0.0.1` by default (loopback only). Use `--host 0.0.0.0` to accept connections from other machines.
+Binds to `127.0.0.1` by default. Use `--host 0.0.0.0` to accept remote connections.
 
 ---
 
-## Real Demo & Actual Terminal Output
+## Python API
 
-The `demo/run_demo.py` script runs a 4-agent workflow (`Orchestrator`, `ResearchAgent`, `FactChecker`, `WriterAgent`) using `smolagents` instrumented with `@profile_agent`. It executes a concurrent fan-out (`asyncio.gather(ResearchAgent, FactChecker)`), a duplicate call to `ResearchAgent`, and a 4-step retry storm in `FactChecker`.
-
-### Output from `spandrift analyze demo/head_trace.json`:
-
-```
-╭──────────────────── Spandrift Analysis: head_trace.json ─────────────────────╮
-│ Total spans: 15    Total cost: $0.0152                                       │
-│ Wall-clock: 235ms   Compute time: 778ms                                      │
-╰──────────────────────────────────────────────────────────────────────────────╯
-                                Per-Agent Rollup                                
-┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
-┃               ┃           ┃            ┃         ┃           ┃        Tokens ┃
-┃ Agent         ┃      Cost ┃ Wall-clock ┃ Compute ┃ LLM calls ┃      (in/out) ┃
-┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
-│ FactChecker   │ $0.002075 │       86ms │   160ms │         1 │       350/120 │
-│ Orchestrator  │ $0.000000 │      235ms │   235ms │         0 │           0/0 │
-│ ResearchAgent │ $0.006800 │      150ms │   256ms │         2 │      1.0k/420 │
-│ WriterAgent   │ $0.006325 │       74ms │   126ms │         1 │       850/420 │
-└───────────────┴───────────┴────────────┴─────────┴───────────┴───────────────┘
-
-                      Execution Waterfall & Concurrency                      
- Span / Task         Timeline (░=TTFT, █=Exec)     Duration  TTFT       Cost 
- Orchestrator        ████████████████████████████     235ms     —          — 
-  ├─ ResearchAgent   ████████                          75ms     —          — 
-  │  ├─ chat gpt-4o    ░░░██                           42ms  21ms  $0.003400 
-  │  └─ web_search          █                          11ms     —          — 
-  ├─ FactChecker     ██████████                        86ms     —          — 
-  │  ├─ chat gpt-4o   ░░██                             31ms  21ms  $0.002075 
-  │  ├─ web_search        █                            11ms     —          — 
-  │  ├─ web_search         █                           10ms     —          — 
-  │  ├─ web_search          █                          11ms     —          — 
-  │  └─ web_search           ██                        11ms     —          — 
-  ├─ ResearchAgent             █████████               75ms     —          — 
-  │  ├─ chat gpt-4o              ░░░██                 42ms  21ms  $0.003400 
-  │  └─ web_search                    ██               11ms     —          — 
-  └─ WriterAgent                        ████████       74ms     —          — 
-     └─ chat gpt-4o                       ░░░░██       52ms  31ms  $0.006325 
-
-⚠ Duplicate Calls
-  FactChecker called 4× with identical input (hash: 43635ec)  wasted: $0.000000
-  ResearchAgent called 2× with identical input (hash: 377f6f9)  wasted: $0.003400
-  ResearchAgent called 2× with identical input (hash: bdf540a)  wasted: $0.000000
-
-⚠ Retry/Loop Storms
-  chat gpt-4o: 4 calls with identical input (chain: bdcf538c50a44b7f → 002ec832eeef4ddc → 7c745c0f115c4cee → 5e0ba9c7e788497c)
-```
-
-### Output from `spandrift diff demo/base_trace.json demo/head_trace.json`:
-
-```
-Spandrift Diff: base_trace.json → head_trace.json
-Total cost: $0.0118 → $0.0152 (+28.8%)
-                                Per-Agent Deltas                                
-┏━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┓
-┃           ┃     Base ┃           ┃         ┃     Base ┃      Head ┃  Latency ┃
-┃ Agent     ┃     Cost ┃ Head Cost ┃  Cost Δ ┃  Latency ┃   Latency ┃        Δ ┃
-┡━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━┩
-│ FactChec… │ $0.0020… │ $0.002075 │   +0.0% │     53ms │      85ms │   +59.7% │
-│ Orchestr… │ $0.0000… │ $0.000000 │   +0.0% │    148ms │     234ms │   +58.2% │
-│ Research… │ $0.0034… │ $0.006800 │ +100.0% │     74ms │     149ms │   +99.5% │
-│ WriterAg… │ $0.0063… │ $0.006325 │   +0.0% │     73ms │      74ms │    +0.9% │
-└───────────┴──────────┴───────────┴─────────┴──────────┴───────────┴──────────┘
-```
-
----
-
-## Python API & Profiling Uninstrumented Code
-
-If you have custom async orchestration functions that aren't auto-instrumented by OTel, wrap them with `@profile_agent` and `@profile_tool`:
+For custom async orchestration that isn't auto-instrumented by OTel:
 
 ```python
 import asyncio
 from spandrift.profiler import profile_agent, profile_tool, collect_trace, mark_first_token
+from spandrift.models import SpanKind
 
 @profile_tool(name="database_lookup")
 async def db_lookup(query: str):
-    await asyncio.sleep(0.01)
-    return "result"
+    return await run_query(query)
 
 @profile_agent(name="SearchAgent")
 async def search(query: str):
@@ -172,19 +110,21 @@ async def search(query: str):
 
 @profile_agent(name="Orchestrator")
 async def main():
-    # Concurrent execution maintains clean span attribution
     await asyncio.gather(search("topic A"), search("topic B"))
 
 async def run():
     async with collect_trace() as spans:
         await main()
-    print(f"Collected {len(spans)} spans")
+    # spans is a list of Span objects with correct parent/child attribution
+    # even across concurrent asyncio.gather branches
 ```
 
-For streaming calls, use `mark_first_token()` when the first chunk arrives to measure true Time-to-First-Token (TTFT):
+For streaming, call `mark_first_token()` when the first chunk arrives to capture real TTFT:
 
 ```python
-async with span_scope(name="chat gpt-4o", kind=SpanKind.LLM, model="gpt-4o"):
+from spandrift.profiler import span_scope, mark_first_token
+
+async with span_scope("chat gpt-4o", kind=SpanKind.LLM, model="gpt-4o"):
     async for chunk in stream_response():
         if is_first_chunk:
             mark_first_token()
@@ -192,55 +132,46 @@ async with span_scope(name="chat gpt-4o", kind=SpanKind.LLM, model="gpt-4o"):
 
 ---
 
-## GitHub Actions CI Example
+## GitHub Actions
 
-A complete workflow configuration is provided in `.github/workflows/ci.yml`:
+Use the reusable action or the CLI directly:
 
 ```yaml
 name: Spandrift CI Gate
-
 on:
   pull_request:
     branches: [main]
 
+permissions:
+  pull-requests: write  # only needed if you want PR comments
+
 jobs:
-  trace-regression-gate:
-    name: Trace Regression Gate (spandrift diff)
+  trace-gate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install spandrift
-        run: pip install -e "."
-      - name: Run Benchmark / Generate Traces
-        run: python demo/run_demo.py
-      - name: Check Cost and Latency Regressions
-        run: |
+      - run: pip install spandrift
+      - run: python demo/run_demo.py  # or your own benchmark
+      - run: |
           spandrift diff \
-            demo/base_trace.json \
-            demo/head_trace.json \
-            --cost-threshold 0.10 \
-            --latency-threshold 0.20 \
+            demo/base_trace.json demo/head_trace.json \
+            --cost-threshold 0.10 --latency-threshold 0.20 \
             --exit-code
 ```
 
 ---
 
-## Production Caveats & Edge Cases
+## Known Trade-offs
 
-To ensure 100% accuracy across diverse production setups, keep these three factors in mind:
-
-| Factor | How It Works | What to Watch Out For |
-| :--- | :--- | :--- |
-| **1. Upstream Token Telemetry** | Spandrift reads token counts from `gen_ai.usage.*` / `llm.token_count.*` attributes. | If a custom or home-grown LLM wrapper forgets to populate token usage on the span, Spandrift will report cost as `$0.00` or `—`. Standard SDKs (LangChain, OpenAI, LiteLLM, smolagents) populate this automatically. |
-| **2. Provider Pricing Drift** | Costs are calculated using a static rate table in `cost_engine.py`, verified as of **2026-08-19**. [genai-prices](https://github.com/pydantic/genai-prices) is a compatible alternative backend for v2. | For newly launched models, price drops, or enterprise negotiated discounts, supply a custom rate card JSON via `export SPANDRIFT_PRICES_PATH="custom_prices.json"`. See `cost_engine.py` for the expected format. |
-| **3. OTLP Protocol Format** | The live receiver (`spandrift listen`) accepts standard HTTP/JSON (`http/json`). | If an OpenTelemetry exporter defaults to streaming binary Protobuf over gRPC to `:4318`, configure it for JSON: `export OTEL_EXPORTER_OTLP_PROTOCOL="http/json"`. |
+- **Fuzzy retry-storm detection via OTLP ingest** requires raw input strings in `input.value` / `gen_ai.input.messages` span attributes. If those attributes are missing, detection falls back to exact hash matching only. The `@profile_agent` decorator path always retains raw input automatically.
+- **Pricing is a static rate table** in `cost_engine.py`, verified as of 2026-08-19. Override with `SPANDRIFT_PRICES_PATH="custom_prices.json"` for new models or negotiated rates. [genai-prices](https://github.com/pydantic/genai-prices) is a compatible alternative backend for v2.
+- **The LangChain/LangGraph callback handler** (`spandrift.adapters.SpandriftCallbackHandler`) is experimental and untested against real LangChain runs. LangSmith is the first-party option there.
 
 ---
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
