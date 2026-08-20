@@ -166,7 +166,7 @@ jobs:
 
 ## Known Trade-offs
 
-- **Fuzzy retry-storm detection via OTLP ingest** requires raw input strings in `input.value` / `gen_ai.input.messages` span attributes. If those attributes are missing, detection falls back to exact hash matching only. The `@profile_agent` decorator path always retains raw input automatically.
+- **Retry-storm detection on LLM spans** requires `input.value` or `gen_ai.input.messages` attributes on the span. Agent and tool spans from smolagents/OpenInference carry these, but bare LLM spans from the OTel GenAI conventions typically do not — so two LLM calls to the same model with different prompts but no input attribute will be treated as identical. The `@profile_agent` path is unaffected (raw input is always retained).
 - **Pricing is a static rate table** in `cost_engine.py`, verified as of 2026-08-19. Override with `SPANDRIFT_PRICES_PATH="custom_prices.json"` for new models or negotiated rates. [genai-prices](https://github.com/pydantic/genai-prices) is a compatible alternative backend for v2.
 - **The LangChain/LangGraph callback handler** (`spandrift.adapters.SpandriftCallbackHandler`) is experimental and untested against real LangChain runs. LangSmith is the first-party option there.
 
