@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from spandrift.adapters import (
-    SpandriftCallbackHandler,
     trace_agent,
     trace_llm,
     trace_tool,
@@ -29,7 +28,6 @@ __all__ = [
     "DiffResult",
     "Span",
     "SpanKind",
-    "SpandriftCallbackHandler",
     "analyze",
     "collect_trace",
     "compute_cost",

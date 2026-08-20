@@ -1,8 +1,16 @@
-# Pricing data should ideally track an open-source dataset like genai-prices
-# (github.com/pydantic/genai-prices) rather than a hand-maintained dict that
-# quietly goes stale. For v1 we bundle a static table covering common models
-# with full ephemeral cache tiering and note where it diverges. Users can extend
-# it via SPANDRIFT_PRICES_PATH env var pointing to a JSON file.
+# Pricing data should ideally come from an open-source live dataset like
+# genai-prices (github.com/pydantic/genai-prices). We evaluated genai-prices
+# v0.1.4 for v1, but its Usage API does not yet accept cache_read_tokens or
+# cache_write_tokens — it silently drops them — so cache-tiered cost
+# calculations cannot be delegated to it today. Once genai-prices supports
+# cache token breakdown in its Usage type, this module should switch to it.
+#
+# Until then, we bundle a static table covering common models with full
+# ephemeral cache tiering. Users can extend or override it via the
+# SPANDRIFT_PRICES_PATH env var pointing to a JSON file with the same shape.
+#
+# Prices verified as of: 2025-06-01. If you notice a stale entry, please
+# open an issue or PR, or override via SPANDRIFT_PRICES_PATH.
 
 """Per-span cost computation against a structured tiered pricing table."""
 

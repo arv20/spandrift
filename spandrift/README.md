@@ -236,7 +236,7 @@ To ensure 100% accuracy across diverse production setups, keep these three facto
 | Factor | How It Works | What to Watch Out For |
 | :--- | :--- | :--- |
 | **1. Upstream Token Telemetry** | Spandrift reads token counts from `gen_ai.usage.*` / `llm.token_count.*` attributes. | If a custom or home-grown LLM wrapper forgets to populate token usage on the span, Spandrift will report cost as `$0.00` or `—`. Standard SDKs (LangChain, OpenAI, LiteLLM, smolagents) populate this automatically. |
-| **2. Provider Pricing Drift** | Costs are calculated using the built-in tiered rate cards in `cost_engine.py`. | Cloud providers periodically adjust prices or cache tiers. For newly launched models or enterprise negotiated discounts, supply a custom rate card JSON via `export SPANDRIFT_PRICES_PATH="custom_prices.json"`. |
+| **2. Provider Pricing Drift** | Costs are calculated using a static rate table in `cost_engine.py`, verified as of **2025-06-01**. We evaluated [genai-prices](https://github.com/pydantic/genai-prices) but its `Usage` type does not yet accept cache read/write token counts, which spandrift needs for tiered billing. | For newly launched models, price drops, or enterprise negotiated discounts, supply a custom rate card JSON via `export SPANDRIFT_PRICES_PATH="custom_prices.json"`. See `cost_engine.py` for the expected format. |
 | **3. OTLP Protocol Format** | The live receiver (`spandrift listen`) accepts standard HTTP/JSON (`http/json`). | If an OpenTelemetry exporter defaults to streaming binary Protobuf over gRPC to `:4318`, configure it for JSON: `export OTEL_EXPORTER_OTLP_PROTOCOL="http/json"`. |
 
 ---

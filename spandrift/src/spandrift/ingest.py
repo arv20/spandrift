@@ -512,11 +512,10 @@ def export_otlp_json(spans: list[Span]) -> dict[str, Any]:
         if s.input_value:
             attrs.append({"key": "input.value", "value": {"stringValue": s.input_value}})
             attrs.append({"key": "gen_ai.input.messages", "value": {"stringValue": s.input_value}})
-        elif s.input_hash:
-            # Fallback: if only hash is available (no raw input retained), write it
-            # so that at least exact-match duplicate detection survives round-trip.
-            attrs.append({"key": "input.value", "value": {"stringValue": s.input_hash}})
-            attrs.append({"key": "gen_ai.input.messages", "value": {"stringValue": s.input_hash}})
+        # When input_value is absent, do NOT substitute input_hash into
+        # input.value — on re-ingestion the hash would be treated as real
+        # input text, re-hashed into a different digest, and fed to Jaccard
+        # similarity as meaningless tokens.
 
         # Include custom attributes
         for k, v in s.attributes.items():

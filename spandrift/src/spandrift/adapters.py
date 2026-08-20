@@ -1,9 +1,9 @@
-"""Drop-in framework adapters, callbacks, and tracing utilities.
+"""Drop-in framework adapters and tracing utilities.
 
 Provides:
 1. Clean decorators: @trace_agent, @trace_tool, @trace_llm
-2. LangGraph / LangChain callback handler: SpandriftCallbackHandler
-3. Auto-configuration helpers for CrewAI, AutoGen, PydanticAI, smolagents
+2. **Experimental** LangGraph / LangChain callback handler: SpandriftCallbackHandler
+   (not tested against real LangChain runs — use at your own risk in v0.1.x)
 """
 
 from __future__ import annotations
@@ -61,7 +61,13 @@ def trace_llm(
 # ---------------------------------------------------------------------------
 
 class SpandriftCallbackHandler:
-    """Async & sync callback handler compatible with LangChain and LangGraph."""
+    """Async & sync callback handler compatible with LangChain and LangGraph.
+
+    .. warning:: Experimental
+        This handler has not been tested against real LangChain/LangGraph runs.
+        It is provided as a starting point for integration. LangChain already
+        has first-party observability via LangSmith — prefer that if available.
+    """
 
     def __init__(self, agent_name: str | None = None) -> None:
         self.agent_name = agent_name
