@@ -24,17 +24,27 @@ export function calculateResults(
     techEntrepreneurship: 0
   };
 
+  const routeTrace: { stop: number; answerIndex: number; category: string }[] = [];
+
   answers.forEach((answerIndex, index) => {
     if (answerIndex === null || answerIndex === undefined) return;
     
     const question = questions[index];
     if (!question) return;
 
+    routeTrace.push({
+      stop: index + 1,
+      answerIndex,
+      category: question.category
+    });
+
     // Add points for the chosen answer
     const chosenAnswer = question.answers[answerIndex];
     if (chosenAnswer && chosenAnswer.weights) {
       Object.entries(chosenAnswer.weights).forEach(([pathId, weight]) => {
-        scores[pathId as CareerPathId] += weight;
+        if (weight) {
+          scores[pathId as CareerPathId] += weight;
+        }
       });
     }
 
@@ -56,15 +66,14 @@ export function calculateResults(
     const rawPercentage = (score / maxScore) * 100;
     
     if (score === 0) return 0;
-    
     return Math.max(1, Math.min(99, Math.round(rawPercentage)));
   };
 
   const sortedPaths = [...priorityOrder].sort((a, b) => {
-    if (scores[a] !== scores[b]) {
+    if (scores[b] !== scores[a]) {
       return scores[b] - scores[a];
     }
-    // Tie breaker
+    // Tie breaker by deterministic priority order
     return priorityOrder.indexOf(a) - priorityOrder.indexOf(b);
   });
 
@@ -84,6 +93,7 @@ export function calculateResults(
       getPathData(sortedPaths[1]),
       getPathData(sortedPaths[2])
     ],
-    allScores: scores
+    allScores: scores,
+    routeTrace
   };
 }

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 @import './variables.css';
 
 /* CSS Reset */
@@ -8,9 +9,11 @@
 }
 
 html, body {
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-primary);
-  font-family: var(--font-family);
+  background-color: var(--ink);
+  color: var(--ink-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: var(--line-height-normal);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
@@ -23,14 +26,26 @@ html, body {
   flex-direction: column;
 }
 
-/* Focus styling */
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--ink-text);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+/* Monospace text */
+code, pre, .mono, [data-mono] {
+  font-family: var(--font-mono);
+}
+
+/* Accessible Focus Styling */
 :focus-visible {
   outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
-  border-radius: var(--radius-sm);
 }
 
-/* Remove default button/input styling */
+/* Form element resets */
 button, input, select, textarea {
   font-family: inherit;
   color: inherit;
@@ -40,30 +55,35 @@ button, input, select, textarea {
 
 button {
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Selection color */
+/* Text Selection */
 ::selection {
-  background-color: var(--color-accent-blue);
-  color: #ffffff;
+  background-color: var(--route);
+  color: var(--ink);
 }
 
-/* Scrollbar */
+/* Precision Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-bg-primary);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: var(--radius-full);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
+  width: 6px;
+  height: 6px;
 }
 
-/* Subtle background effect */
+::-webkit-scrollbar-track {
+  background: var(--ink);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--slate);
+  border-radius: var(--radius-none);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--route);
+}
+
+/* Global Subtle Technical Background Grid (0.04 opacity lines) */
 body::before {
   content: '';
   position: fixed;
@@ -71,14 +91,14 @@ body::before {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-image: linear-gradient(to right, rgba(99, 102, 241, 0.02) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(99, 102, 241, 0.02) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(62, 163, 158, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(62, 163, 158, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
   pointer-events: none;
   z-index: -1;
 }
 
-/* Images and SVGs */
 img, svg {
   max-width: 100%;
   display: block;

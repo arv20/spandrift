@@ -3,102 +3,292 @@ import { Question } from '../types';
 export const QUESTIONS: Question[] = [
   {
     id: 1,
-    text: "You have a free weekend to build something. What sounds most exciting?",
+    stopIndex: 'STOP 01 // 10',
+    category: 'PROJECT ARCHITECTURE',
+    text: 'You have an open weekend to build a technical project from scratch. Which direction do you take?',
+    contextNote: 'Signals core builder orientation and preferred project output.',
     answers: [
-      { text: "A web app or game for my friends to play", weights: { softwareEng: 5, productUx: 3, techEntrepreneurship: 2 } },
-      { text: "A tool that predicts sports outcomes based on stats", weights: { quantFinance: 5, aiDataScience: 4, softwareEng: 2 } },
-      { text: "A sleek, beautiful portfolio to show off my ideas", weights: { productUx: 5, techEntrepreneurship: 3, softwareEng: 1 } },
-      { text: "A script that automates a boring task", weights: { cybersecurity: 4, aiDataScience: 3, softwareEng: 4 } }
+      { 
+        text: 'A clean web application or game with real-time multiplayer networking',
+        code: 'FORK_A',
+        weights: { softwareEng: 5, productUx: 3, techEntrepreneurship: 2 } 
+      },
+      { 
+        text: 'A quantitative backtester modeling statistical market pricing and volatility',
+        code: 'FORK_B',
+        weights: { quantFinance: 5, aiDataScience: 4, softwareEng: 2 } 
+      },
+      { 
+        text: 'A neural classifier trained to detect anomalies or generate structured summaries',
+        code: 'FORK_C',
+        weights: { aiDataScience: 5, softwareEng: 3, cybersecurity: 2 } 
+      },
+      { 
+        text: 'A vulnerability scanner auditing network services and common protocol weaknesses',
+        code: 'FORK_D',
+        weights: { cybersecurity: 5, softwareEng: 3, quantFinance: 1 } 
+      }
     ]
   },
   {
     id: 2,
-    text: "When it comes to your favorite subjects in school, which combination clicks best with you?",
+    stopIndex: 'STOP 02 // 10',
+    category: 'CORE METHODOLOGY',
+    text: 'Which academic combination gives you the most satisfaction when working through hard problems?',
+    contextNote: 'Identifies foundational cognitive preferences and analytical habits.',
     answers: [
-      { text: "Math, Statistics, and Economics", weights: { quantFinance: 5, aiDataScience: 3, techEntrepreneurship: 1 } },
-      { text: "Computer Science and Logic", weights: { softwareEng: 5, cybersecurity: 3, aiDataScience: 2 } },
-      { text: "Art, Psychology, and Design", weights: { productUx: 5, techEntrepreneurship: 2, softwareEng: 1 } },
-      { text: "Business, Debate, and Leadership", weights: { techEntrepreneurship: 5, productUx: 3, quantFinance: 2 } }
+      { 
+        text: 'Advanced calculus, probability distributions, and microeconomic models',
+        code: 'FORK_A',
+        weights: { quantFinance: 5, aiDataScience: 3, techEntrepreneurship: 2 } 
+      },
+      { 
+        text: 'Discrete mathematics, algorithmic complexity, and computer architecture',
+        code: 'FORK_B',
+        weights: { softwareEng: 5, cybersecurity: 3, aiDataScience: 2 } 
+      },
+      { 
+        text: 'Cognitive psychology, design ergonomics, and visual hierarchy',
+        code: 'FORK_C',
+        weights: { productUx: 5, techEntrepreneurship: 3, softwareEng: 1 } 
+      },
+      { 
+        text: 'Economics, competitive strategy, and executive debate',
+        code: 'FORK_D',
+        weights: { techEntrepreneurship: 5, productUx: 3, quantFinance: 2 } 
+      }
     ]
   },
   {
     id: 3,
-    text: "You're given a messy, ambiguous problem with no clear instructions. What's your first move?",
+    stopIndex: 'STOP 03 // 10',
+    category: 'HANDLING AMBIGUITY',
+    text: 'You are handed an ill-defined problem with missing constraints and no spec. What is your first action?',
+    contextNote: 'Tests your operating model when confronted with unconstrained uncertainty.',
     answers: [
-      { text: "Gather the team and brainstorm a vision", weights: { techEntrepreneurship: 5, productUx: 3, softwareEng: 1 } },
-      { text: "Look for patterns and hidden clues in the data", weights: { aiDataScience: 5, quantFinance: 4, cybersecurity: 3 } },
-      { text: "Break it down into smaller, logical steps", weights: { softwareEng: 5, quantFinance: 3, aiDataScience: 2 } },
-      { text: "Interview people who are affected by the problem", weights: { productUx: 5, techEntrepreneurship: 4, aiDataScience: 1 } }
+      { 
+        text: 'Define the minimum viable scope, align stakeholders on a shared goal, and build momentum',
+        code: 'FORK_A',
+        weights: { techEntrepreneurship: 5, productUx: 3, softwareEng: 1 } 
+      },
+      { 
+        text: 'Ingest all available telemetry to uncover underlying statistical correlations and outliers',
+        code: 'FORK_B',
+        weights: { aiDataScience: 5, quantFinance: 4, cybersecurity: 2 } 
+      },
+      { 
+        text: 'Isolate technical primitives, write an RFC, and construct an incremental proof-of-concept',
+        code: 'FORK_C',
+        weights: { softwareEng: 5, quantFinance: 3, aiDataScience: 2 } 
+      },
+      { 
+        text: 'Conduct structured interviews with affected users to observe exact friction points first-hand',
+        code: 'FORK_D',
+        weights: { productUx: 5, techEntrepreneurship: 4, aiDataScience: 1 } 
+      }
     ]
   },
   {
     id: 4,
-    text: "On a group project, what role do you naturally fall into?",
+    stopIndex: 'STOP 04 // 10',
+    category: 'TEAM DYNAMICS',
+    text: 'In a 4-person engineering squad during an intensive hackathon, which responsibility do you gravitate toward?',
+    contextNote: 'Reveals your natural team function and operational role.',
     answers: [
-      { text: "The leader who organizes and pitches the final idea", weights: { techEntrepreneurship: 5, productUx: 2, quantFinance: 1 } },
-      { text: "The builder who actually puts the pieces together", weights: { softwareEng: 5, aiDataScience: 2, cybersecurity: 1 } },
-      { text: "The researcher analyzing all the facts and figures", weights: { aiDataScience: 5, quantFinance: 5, cybersecurity: 2 } },
-      { text: "The designer making sure the final product looks perfect", weights: { productUx: 5, softwareEng: 2, techEntrepreneurship: 2 } }
+      { 
+        text: 'Team lead: prioritizing the roadmap, defending the pitch, and coordinating deliverables',
+        code: 'FORK_A',
+        weights: { techEntrepreneurship: 5, productUx: 2, quantFinance: 1 } 
+      },
+      { 
+        text: 'Core systems engineer: designing database schemas, backend endpoints, and infrastructure',
+        code: 'FORK_B',
+        weights: { softwareEng: 5, aiDataScience: 2, cybersecurity: 2 } 
+      },
+      { 
+        text: 'Data specialist: building predictive features, statistical pipelines, and analytical evaluations',
+        code: 'FORK_C',
+        weights: { aiDataScience: 5, quantFinance: 4, softwareEng: 1 } 
+      },
+      { 
+        text: 'Product designer: mapping user flows, Figma mockups, and polishing interface polish',
+        code: 'FORK_D',
+        weights: { productUx: 5, softwareEng: 2, techEntrepreneurship: 2 } 
+      }
     ]
   },
   {
     id: 5,
-    text: "What kind of puzzle or challenge appeals to you the most?",
+    stopIndex: 'STOP 05 // 10',
+    category: 'ANALYTICAL PUZZLES',
+    text: 'What kind of complex investigative puzzle keeps you engaged for hours?',
+    contextNote: 'Pinpoints specific problem-solving instincts and curiosity drivers.',
     answers: [
-      { text: "Finding the fastest, most efficient way to solve a maze", weights: { softwareEng: 5, quantFinance: 3, aiDataScience: 2 } },
-      { text: "Figuring out how a magic trick works behind the scenes", weights: { cybersecurity: 5, softwareEng: 3, aiDataScience: 2 } },
-      { text: "Predicting what someone will do before they do it", weights: { aiDataScience: 5, quantFinance: 4, productUx: 2 } },
-      { text: "Finding the loopholes in a set of complex rules", weights: { cybersecurity: 5, quantFinance: 3, techEntrepreneurship: 3 } }
+      { 
+        text: 'Finding subtle race conditions, memory leaks, and performance bottlenecks in code',
+        code: 'FORK_A',
+        weights: { softwareEng: 5, cybersecurity: 3, quantFinance: 2 } 
+      },
+      { 
+        text: 'Reverse-engineering a closed protocol to understand edge cases and bypass defenses',
+        code: 'FORK_B',
+        weights: { cybersecurity: 5, softwareEng: 3, aiDataScience: 1 } 
+      },
+      { 
+        text: 'Identifying statistical arbitrage or predictive drivers in non-stationary datasets',
+        code: 'FORK_C',
+        weights: { quantFinance: 5, aiDataScience: 4, softwareEng: 1 } 
+      },
+      { 
+        text: 'Diagnosing why users drop off at step 3 of an onboarding funnel and designing a fix',
+        code: 'FORK_D',
+        weights: { productUx: 5, techEntrepreneurship: 3, aiDataScience: 2 } 
+      }
     ]
   },
   {
     id: 6,
-    text: "You are handed a massive spreadsheet with one million rows of data. What's your reaction?",
+    stopIndex: 'STOP 06 // 10',
+    category: 'DATA REASONING',
+    text: 'You are provided with 500 million transaction log entries. Where do you focus your scrutiny?',
+    contextNote: 'Assesses your perspective on large-scale informational assets.',
     answers: [
-      { text: "Write a script to visualize it and find trends", weights: { aiDataScience: 5, quantFinance: 4, softwareEng: 2 } },
-      { text: "Analyze it for potential profit opportunities", weights: { quantFinance: 5, techEntrepreneurship: 3, aiDataScience: 3 } },
-      { text: "Figure out how to compress and store it safely", weights: { cybersecurity: 5, softwareEng: 4, aiDataScience: 1 } },
-      { text: "Use it to understand what users want", weights: { productUx: 5, techEntrepreneurship: 4, aiDataScience: 2 } }
+      { 
+        text: 'Evaluating pricing anomalies, volatility clustering, and yield curve anomalies',
+        code: 'FORK_A',
+        weights: { quantFinance: 5, aiDataScience: 4, softwareEng: 1 } 
+      },
+      { 
+        text: 'Training dimensionality-reduction and clustering models to segment behavioral cohorts',
+        code: 'FORK_B',
+        weights: { aiDataScience: 5, quantFinance: 3, softwareEng: 2 } 
+      },
+      { 
+        text: 'Auditing authentication traces for credential stuffing and unauthorized lateral movement',
+        code: 'FORK_C',
+        weights: { cybersecurity: 5, softwareEng: 3, quantFinance: 1 } 
+      },
+      { 
+        text: 'Benchmarking query latency, partition pruning, and cache hit rates in the datastore',
+        code: 'FORK_D',
+        weights: { softwareEng: 5, cybersecurity: 2, quantFinance: 2 } 
+      }
     ]
   },
   {
     id: 7,
-    text: "If you were to create content online, what would it be?",
+    stopIndex: 'STOP 07 // 10',
+    category: 'TECHNICAL PUBLISHING',
+    text: 'If you were to publish a deep-dive technical engineering article, what would the subject matter be?',
+    contextNote: 'Indicates authentic knowledge interests and technical taste.',
     answers: [
-      { text: "Tutorials on how to code or build apps", weights: { softwareEng: 5, aiDataScience: 2, techEntrepreneurship: 1 } },
-      { text: "Deep dives into market trends and investing", weights: { quantFinance: 5, techEntrepreneurship: 3, aiDataScience: 1 } },
-      { text: "Reviews of well-designed products and apps", weights: { productUx: 5, techEntrepreneurship: 2, softwareEng: 2 } },
-      { text: "Exposing scams and teaching digital safety", weights: { cybersecurity: 5, softwareEng: 2, aiDataScience: 1 } }
+      { 
+        text: 'Architecting high-concurrency event loops and zero-copy networking in Rust',
+        code: 'FORK_A',
+        weights: { softwareEng: 5, cybersecurity: 2, quantFinance: 2 } 
+      },
+      { 
+        text: 'Mathematical proofs and implementation of Black-Scholes versus jump-diffusion pricing models',
+        code: 'FORK_B',
+        weights: { quantFinance: 5, aiDataScience: 3, techEntrepreneurship: 1 } 
+      },
+      { 
+        text: 'A critique of micro-interaction patterns in developer tools and accessibility standards',
+        code: 'FORK_C',
+        weights: { productUx: 5, techEntrepreneurship: 2, softwareEng: 2 } 
+      },
+      { 
+        text: 'Dissecting a kernel zero-day exploit and modern memory-safety mitigation techniques',
+        code: 'FORK_D',
+        weights: { cybersecurity: 5, softwareEng: 3, quantFinance: 1 } 
+      }
     ]
   },
   {
     id: 8,
-    text: "What excites you the most about the future of technology?",
+    stopIndex: 'STOP 08 // 10',
+    category: 'FUTURE INFRASTRUCTURE',
+    text: 'Which technological paradigm shift represents the most critical engineering frontier over the next decade?',
+    contextNote: 'Surveys forward-looking technical vision and strategic horizon.',
     answers: [
-      { text: "Machines that can think and learn like humans", weights: { aiDataScience: 5, softwareEng: 3, quantFinance: 2 } },
-      { text: "Building entirely new industries and businesses", weights: { techEntrepreneurship: 5, productUx: 3, quantFinance: 2 } },
-      { text: "Seamless apps that make everyday life effortless", weights: { productUx: 5, softwareEng: 4, techEntrepreneurship: 2 } },
-      { text: "Advanced cryptography to protect privacy", weights: { cybersecurity: 5, softwareEng: 3, quantFinance: 1 } }
+      { 
+        text: 'Self-improving neural models that synthesize verified formal logic and code',
+        code: 'FORK_A',
+        weights: { aiDataScience: 5, softwareEng: 3, quantFinance: 2 } 
+      },
+      { 
+        text: 'Pioneering vertical market software that digitizes legacy manual industries from the ground up',
+        code: 'FORK_B',
+        weights: { techEntrepreneurship: 5, productUx: 3, quantFinance: 2 } 
+      },
+      { 
+        text: 'Spatial computing and frictionless interfaces that eliminate cognitive load for operators',
+        code: 'FORK_C',
+        weights: { productUx: 5, softwareEng: 3, techEntrepreneurship: 2 } 
+      },
+      { 
+        text: 'Post-quantum cryptography and zero-trust verification across global critical infrastructure',
+        code: 'FORK_D',
+        weights: { cybersecurity: 5, softwareEng: 3, quantFinance: 1 } 
+      }
     ]
   },
   {
     id: 9,
-    text: "How would you spend your time at a massive tech conference?",
+    stopIndex: 'STOP 09 // 10',
+    category: 'CONFERENCE WORKSHOPS',
+    text: 'You attend a major technical conference with limited time. Which hands-on workshop do you attend?',
+    contextNote: 'Checks your instinct for hands-on skill acquisition.',
     answers: [
-      { text: "Attending a hackathon to build something in 24 hours", weights: { softwareEng: 5, techEntrepreneurship: 3, aiDataScience: 2 } },
-      { text: "Networking with investors and pitching ideas", weights: { techEntrepreneurship: 5, quantFinance: 3, productUx: 2 } },
-      { text: "Learning about the latest vulnerabilities and exploits", weights: { cybersecurity: 5, softwareEng: 3, aiDataScience: 1 } },
-      { text: "Checking out the most beautiful new hardware and software", weights: { productUx: 5, techEntrepreneurship: 2, softwareEng: 2 } }
+      { 
+        text: 'Building a distributed key-value store with Raft consensus from scratch',
+        code: 'FORK_A',
+        weights: { softwareEng: 5, cybersecurity: 2, aiDataScience: 2 } 
+      },
+      { 
+        text: 'Constructing early-stage venture pitch decks and navigating customer acquisition unit economics',
+        code: 'FORK_B',
+        weights: { techEntrepreneurship: 5, productUx: 3, quantFinance: 2 } 
+      },
+      { 
+        text: 'Live exploitation lab: reverse engineering binaries and auditing modern cryptographic protocols',
+        code: 'FORK_C',
+        weights: { cybersecurity: 5, softwareEng: 3, aiDataScience: 1 } 
+      },
+      { 
+        text: 'Conducting guerrilla usability tests, Figma design tokens, and systematic design system audits',
+        code: 'FORK_D',
+        weights: { productUx: 5, techEntrepreneurship: 2, softwareEng: 2 } 
+      }
     ]
   },
   {
     id: 10,
-    text: "Imagine your dream first job in tech. What does it look like?",
+    stopIndex: 'STOP 10 // 10',
+    category: 'LONG-TERM AMBITION',
+    text: 'Looking ahead 5 years, what role best reflects your ideal day-to-day contribution?',
+    contextNote: 'Determines overall destination alignment and career vision.',
     answers: [
-      { text: "Writing code that millions of people use daily", weights: { softwareEng: 5, productUx: 3, techEntrepreneurship: 1 } },
-      { text: "Designing the look and feel of a popular new app", weights: { productUx: 5, techEntrepreneurship: 2, softwareEng: 2 } },
-      { text: "Analyzing algorithms for a top trading firm", weights: { quantFinance: 5, aiDataScience: 3, softwareEng: 2 } },
-      { text: "Securing a major company's servers from hackers", weights: { cybersecurity: 5, softwareEng: 3, aiDataScience: 2 } }
+      { 
+        text: 'Staff Software Architect leading technical roadmaps and authoring mission-critical services',
+        code: 'FORK_A',
+        weights: { softwareEng: 5, productUx: 2, techEntrepreneurship: 2 } 
+      },
+      { 
+        text: 'Head of Product defining user journeys, feature requirements, and high-fidelity specifications',
+        code: 'FORK_B',
+        weights: { productUx: 5, techEntrepreneurship: 3, softwareEng: 2 } 
+      },
+      { 
+        text: 'Quantitative Portfolio Strategist developing predictive models and high-throughput trade logic',
+        code: 'FORK_C',
+        weights: { quantFinance: 5, aiDataScience: 4, softwareEng: 1 } 
+      },
+      { 
+        text: 'Lead Security Researcher uncovering zero-day vulnerabilities and fortifying defensive postures',
+        code: 'FORK_D',
+        weights: { cybersecurity: 5, softwareEng: 3, quantFinance: 1 } 
+      }
     ]
   }
 ];
