@@ -1,0 +1,162 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 80vh;
+  padding: var(--space-8) var(--space-4);
+  gap: var(--space-12);
+  position: relative;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: center;
+  z-index: 1;
+}
+
+.title {
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  text-transform: uppercase;
+}
+
+/* Mobile adjustments for title */
+@media (max-width: 640px) {
+  .title {
+    font-size: var(--font-size-4xl);
+  }
+}
+
+@media (max-width: 400px) {
+  .title {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+.subtitle {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-normal);
+  max-width: 600px;
+}
+
+.mainAction {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: center;
+  z-index: 1;
+}
+
+/* Pulsing glow animation around the start button */
+.startButtonWrapper {
+  position: relative;
+}
+
+.startButtonWrapper::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-violet));
+  opacity: 0;
+  animation: buttonPulse 2s ease-in-out infinite;
+  z-index: -1;
+  filter: blur(12px);
+}
+
+@keyframes buttonPulse {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.4; }
+}
+
+.noExperience {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.disclaimer {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  max-width: 400px;
+  margin-top: auto;
+  z-index: 1;
+}
+
+/* LARP mode indicator */
+.larpIndicator {
+  font-size: var(--font-size-lg);
+  vertical-align: super;
+  margin-left: var(--space-2);
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Easter egg trigger - looks like a normal element */
+.easterEgg {
+  cursor: default;
+  user-select: none;
+  display: inline-block;
+}
+
+/* Decorative background elements */
+.decorativeElements {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-accent-blue);
+  opacity: 0.2;
+}
+
+.dot1 { 
+  top: 20%; 
+  left: 15%; 
+  animation: float 6s ease-in-out infinite; 
+}
+.dot2 { 
+  top: 70%; 
+  right: 20%; 
+  background-color: var(--color-accent-violet); 
+  animation: float 7s ease-in-out infinite reverse; 
+}
+.dot3 { 
+  bottom: 10%; 
+  left: 30%; 
+  width: 6px; 
+  height: 6px; 
+  animation: float 5s ease-in-out infinite 1s; 
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .startButtonWrapper::before, .dot1, .dot2, .dot3, .larpIndicator {
+    animation: none;
+  }
+  .startButtonWrapper::before {
+    opacity: 0.2;
+  }
+}
