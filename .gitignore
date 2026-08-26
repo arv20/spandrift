@@ -40,7 +40,7 @@ htmlcov/
 *.swp
 
 # Nested sub-repos and temporary state
-test/
+/test/
 .freebuff/
 *.db
 *.db-shm
