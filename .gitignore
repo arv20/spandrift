@@ -41,6 +41,9 @@ htmlcov/
 
 # Nested sub-repos and temporary state
 /test/
+/tech club/
+/the team/
+node_modules/
 .freebuff/
 *.db
 *.db-shm
