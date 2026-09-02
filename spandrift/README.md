@@ -1,12 +1,52 @@
 # spandrift
 
-Local-first, OpenTelemetry-native trace analyzer for multi-agent LLM systems: catches redundant calls, retry storms, and cost regressions, and gates CI on them.
+Local-first trace analysis for multi-agent LLM systems.
 
+Basically, spandrift reads the OpenTelemetry spans your agents are probably already producing and tries to answer a few questions that normal tracing dashboards don't really focus on:
+
+- which agent actually cost the money?
+- did the same tool/agent accidentally get called twice?
+- are retries going crazy?
+- did this PR make the workflow slower or more expensive?
+
+It's not meant to replace Langfuse, Phoenix, Logfire, etc. If you're already sending traces to one of those, keep doing that.
+
+spandrift just reads the same OTel spans and runs a smaller set of checks that are more specific to agent workflows.
+
+Right now it works with spans from `openinference-instrumentation-smolagents` for smolagents, Pydantic AI's built-in instrumentation, and its own decorators for code that isn't instrumented already.
+
+## Install
+
+```bash
+pip install spandrift
 ```
+
+Python 3.11+ is required.
+
+The concurrency-safe attribution stuff depends on `asyncio.TaskGroup` and the `context=` argument on `create_task`, which were both added in 3.11.
+
+## Quickstart
+
+```bash
+spandrift analyze demo/trace.json
+```
+
+```text
 ╭──────────────────── Spandrift Analysis: head_trace.json ─────────────────────╮
 │ Total spans: 15    Total cost: $0.0152                                       │
 │ Wall-clock: 234ms   Compute time: 775ms                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+                                Per-Agent Rollup
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃               ┃           ┃            ┃         ┃           ┃        Tokens ┃
+┃ Agent         ┃      Cost ┃ Wall-clock ┃ Compute ┃ LLM calls ┃      (in/out) ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ FactChecker   │ $0.002075 │       85ms │   159ms │         1 │       350/120 │
+│ Orchestrator  │ $0.000000 │      234ms │   234ms │         0 │           0/0 │
+│ ResearchAgent │ $0.006800 │      149ms │   255ms │         2 │      1.0k/420 │
+│ WriterAgent   │ $0.006325 │       74ms │   126ms │         1 │       850/420 │
+└───────────────┴───────────┴────────────┴─────────┴───────────┴───────────────┘
+
                       Execution Waterfall & Concurrency
  Span / Task         Timeline (░=TTFT, █=Exec)     Duration  TTFT       Cost
  Orchestrator        ████████████████████████████     234ms     —          —
@@ -32,146 +72,145 @@ Local-first, OpenTelemetry-native trace analyzer for multi-agent LLM systems: ca
   web_search: 4 calls with identical input
 ```
 
-This is **not** a new observability platform. Frameworks like smolagents and Pydantic AI already emit standard OpenTelemetry spans; tools like Phoenix, Langfuse, and Logfire already do general tracing well. Spandrift consumes those standard spans and focuses on diagnostics specific to multi-agent orchestration that general-purpose backends don't foreground.
-
-## Quickstart
+You can also compare two runs:
 
 ```bash
-pip install spandrift
-spandrift analyze trace.json
+spandrift diff base.json head.json --cost-threshold 0.10 --exit-code
 ```
 
-Generate an HTML report:
-```bash
-spandrift analyze trace.json --html report.html
-```
+That makes it usable in CI too. If the cost delta crosses the threshold, the command can fail the step.
 
----
-
-## What It Catches
-
-- **Duplicate calls**: same agent called with the exact same input multiple times, with recursive subtree cost rollup showing wasted spend.
-- **Retry / loop storms**: identical or near-identical calls in sequence (fuzzy Jaccard matching on raw inputs, not just exact hash).
-- **Latency & TTFT outliers**: per-model outlier detection on Time-to-First-Token or total duration.
-- **Cost regressions between runs**: `spandrift diff base.json head.json` compares per-agent cost and latency, exits non-zero when thresholds are exceeded.
-
-## CLI Commands
-
-### `spandrift analyze`
-
-```bash
-spandrift analyze trace.json                          # terminal report
-spandrift analyze trace.json --html report.html       # + HTML report
-```
-
-### `spandrift diff`
-
-```bash
-spandrift diff base.json head.json --cost-threshold 0.10 --latency-threshold 0.20 --exit-code
-```
-
-Exits `1` if any agent's cost increases >10% or latency >20%. Designed for CI gating.
-
-### `spandrift listen` (optional convenience)
-
-Starts a loopback-only HTTP receiver for OTLP JSON trace exports:
-
-```bash
-spandrift listen --port 4318 --save-dir traces/
-```
-
-```bash
-export OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318"
-export OTEL_EXPORTER_OTLP_PROTOCOL="http/json"
-python my_multi_agent_app.py
-```
-
-Binds to `127.0.0.1` by default. Use `--host 0.0.0.0` to accept remote connections.
-
----
-
-## Python API
-
-For custom async orchestration that isn't auto-instrumented by OTel:
-
-```python
-import asyncio
-from spandrift.profiler import profile_agent, profile_tool, collect_trace, mark_first_token
-from spandrift.models import SpanKind
-
-@profile_tool(name="database_lookup")
-async def db_lookup(query: str):
-    return await run_query(query)
-
-@profile_agent(name="SearchAgent")
-async def search(query: str):
-    await db_lookup(query)
-    return "done"
-
-@profile_agent(name="Orchestrator")
-async def main():
-    await asyncio.gather(search("topic A"), search("topic B"))
-
-async def run():
-    async with collect_trace() as spans:
-        await main()
-    # spans is a list of Span objects with correct parent/child attribution
-    # even across concurrent asyncio.gather branches
-```
-
-For streaming, call `mark_first_token()` when the first chunk arrives to capture real TTFT:
-
-```python
-from spandrift.profiler import span_scope, mark_first_token
-
-async with span_scope("chat gpt-4o", kind=SpanKind.LLM, model="gpt-4o"):
-    async for chunk in stream_response():
-        if is_first_chunk:
-            mark_first_token()
-```
-
----
-
-## GitHub Actions
-
-Use the reusable action or the CLI directly:
+There's a composite GitHub Action in `action.yml` that wraps this. If you want it to post the diff as a PR comment, the calling workflow needs:
 
 ```yaml
-name: Spandrift CI Gate
-on:
-  pull_request:
-    branches: [main]
-
-permissions:
-  pull-requests: write  # only needed if you want PR comments
-
-jobs:
-  trace-gate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - run: pip install spandrift
-      - run: python demo/run_demo.py  # or your own benchmark
-      - run: |
-          spandrift diff \
-            demo/base_trace.json demo/head_trace.json \
-            --cost-threshold 0.10 --latency-threshold 0.20 \
-            --exit-code
+pull-requests: write
 ```
 
----
+There's also:
 
-## Known Trade-offs
+```bash
+spandrift listen
+```
 
-- **Detection coverage on spans without captured inputs**: Duplicate and retry-storm detection require `input.value` or `gen_ai.input.messages` attributes on the span (or exact input hashes). Spans lacking input telemetry (such as bare LLM spans from minimal OTel instrumentation) are never treated as matches and will not be flagged. The `@profile_agent` decorator path automatically captures raw inputs.
-- **Pricing is a static rate table** in `cost_engine.py`, verified as of 2026-08-19. Override with `SPANDRIFT_PRICES_PATH="custom_prices.json"` for new models or negotiated rates. [genai-prices](https://github.com/pydantic/genai-prices) is a compatible alternative backend for v2.
-- **The LangChain/LangGraph callback handler** (`spandrift.adapters.SpandriftCallbackHandler`) is experimental and untested against real LangChain runs. LangSmith is the first-party option there.
+which starts a local OTLP receiver so you don't have to write a trace file first. It binds to `127.0.0.1` by default.
 
----
+## What it catches
+
+### Cost + latency per agent
+
+Costs and timing are rolled up per agent, including workflows with concurrent branches.
+
+This matters because if two sub-agents run at the same time through `asyncio.gather`, you obviously don't want to just add both wall-clock durations together and pretend they ran sequentially.
+
+### Duplicate calls
+
+If the same agent or tool gets called twice with the same input in one run, it'll flag it.
+
+This has caught more dumb orchestration bugs than I expected.
+
+### Retry storms
+
+It also looks for repeated calls with identical or near-identical input.
+
+Those get chained using exact matches or token-level similarity on the captured input text, so something retrying over and over with tiny changes doesn't just disappear into the trace.
+
+### TTFT outliers
+
+TTFT = time to first token.
+
+spandrift tracks that separately from total request duration and flags outliers per model. Mostly useful for figuring out whether the actual agent got slower or whether a provider/model was just having a bad time.
+
+## How it works
+
+For code that isn't already OTel-instrumented, there are two decorators:
+
+```python
+@profile_agent
+@profile_tool
+```
+
+They wrap async functions and emit spans in the same general shape as the other supported instrumentation.
+
+A surprisingly annoying part of building this was getting attribution right with concurrency.
+
+A global "current span" works fine until two agents run at the same time. Then child spans can start getting attributed to whichever agent most recently changed the global value, which is obviously bad.
+
+spandrift uses `contextvars.ContextVar` instead.
+
+asyncio copies context when tasks are created, so each concurrent task keeps the right agent context without having to manually pass IDs everywhere.
+
+There's a test specifically for this too: two agents execute concurrently and both produce child spans. I wanted a test that would actually break the naive implementation instead of just testing the easy sequential case.
+
+The analysis side uses Polars.
+
+Most of the work is grouped batch aggregation anyway — cost by agent, latency percentiles by model, retries, duplicates, etc. A run can also get into the thousands of spans pretty quickly once agents start retrying, so using a columnar dataframe library made sense.
+
+## A bug I found while building it
+
+The cost calculation ended up being slightly more annoying than expected because of cached tokens.
+
+OpenTelemetry's:
+
+```text
+gen_ai.usage.input_tokens
+```
+
+is the total input token count, including cached input.
+
+So if you take that value and then add cache-read/cache-write token counts separately, you're double-counting part of the bill.
+
+I originally did exactly that.
+
+I caught it by comparing spandrift's numbers against `genai-prices` on a few actual Anthropic/OpenAI caching scenarios. The fix is in `cost_engine.py` and there's a regression test for it now.
+
+## Known trade-offs
+
+Duplicate/retry detection needs the input text to actually exist in the span.
+
+Usually that's either:
+
+```text
+input.value
+```
+
+or:
+
+```text
+gen_ai.input.messages
+```
+
+The `@profile_agent` path always captures it, but bare LLM spans from really minimal OTel instrumentation sometimes don't.
+
+If the input isn't there, spandrift doesn't try to guess. That span just isn't checked for duplicate/retry similarity.
+
+Pricing is also a static table right now, not a live API lookup.
+
+`cost_engine.py` includes the date the bundled prices were last verified. If something changes before I update it, you can override the table with:
+
+```bash
+SPANDRIFT_PRICES_PATH
+```
+
+There's also a LangChain/LangGraph adapter under `spandrift.adapters`.
+
+That part is experimental and definitely less tested than the core path. Also, if your entire stack is LangChain, LangSmith already does a lot, so I'm not trying to pretend this replaces it.
+
+## Why I made this
+
+I mostly wanted something I could run locally on traces after changing an agent workflow and immediately answer stuff like:
+
+> why did this run suddenly cost 40% more?
+
+or
+
+> why did this tool execute 6 times?
+
+General observability tools are way more capable overall, but sometimes I just want those answers without digging through a tracing UI.
+
+That's basically the point of spandrift.
+
+It's still a young project, so issues and PRs are very welcome. If something looks wrong, there's a non-zero chance it actually is.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT © Aarav Kolgaonkar
