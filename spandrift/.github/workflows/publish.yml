@@ -62,6 +62,6 @@ jobs:
         # Uses Trusted Publishing (OIDC) — no PYPI_API_TOKEN needed.
         # Configure the trusted publisher on PyPI's side:
         #   Owner: arv20
-        #   Repository: opensourceproject
+        #   Repository: spandrift
         #   Workflow: publish.yml
         #   Environment: pypi

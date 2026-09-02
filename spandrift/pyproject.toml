@@ -9,7 +9,7 @@ description = "Local-first trace analysis and diagnostic engine for multi-agent 
 readme = "README.md"
 license = "MIT"
 authors = [
-    { name = "Spandrift Authors", email = "spandrift@users.noreply.github.com" },
+    { name = "Aarav Kolgaonkar", email = "arv20@users.noreply.github.com" },
 ]
 keywords = [
     "opentelemetry",
@@ -44,10 +44,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/arv20/opensourceproject"
-Repository = "https://github.com/arv20/opensourceproject"
-Issues = "https://github.com/arv20/opensourceproject/issues"
-Documentation = "https://github.com/arv20/opensourceproject#readme"
+Homepage = "https://github.com/arv20/spandrift"
+Repository = "https://github.com/arv20/spandrift"
+Issues = "https://github.com/arv20/spandrift/issues"
+Documentation = "https://github.com/arv20/spandrift#readme"
 
 [project.optional-dependencies]
 otel = [
