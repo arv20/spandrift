@@ -1,9 +1,7 @@
-"""Lightweight in-process HTTP OTLP Ingestion Server.
+"""Lightweight in-process HTTP OTLP ingestion server.
 
-Listens for standard OpenTelemetry OTLP JSON HTTP trace exports on /v1/traces
-(default port: 4318). Compatible with any OpenTelemetry SDK:
-    OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318"
-    OTEL_EXPORTER_OTLP_PROTOCOL="http/json"
+Listens for OTLP/HTTP protobuf and JSON trace exports on /v1/traces
+(default port: 4318).
 """
 
 from __future__ import annotations
@@ -16,9 +14,14 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Callable
 
+from google.protobuf.message import DecodeError
+from opentelemetry.proto.collector.trace.v1.trace_service_pb2 import (
+    ExportTraceServiceResponse,
+)
+
 from spandrift.analysis import AnalysisResult, analyze
 from spandrift.cost_engine import enrich_spans
-from spandrift.ingest import _parse_raw_span, save_otlp_json
+from spandrift.ingest import decode_otlp_protobuf, parse_otlp_spans, save_otlp_json
 from spandrift.models import Span
 from spandrift.report import render_terminal_report
 
@@ -47,64 +50,76 @@ class OTLPTraceHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
     def do_POST(self) -> None:
-        """Handle incoming OTLP JSON trace export."""
+        """Handle an OTLP/HTTP JSON or protobuf trace export."""
         if not self.path.startswith("/v1/traces"):
             self.send_response(404)
             self.end_headers()
             return
 
-        content_length = int(self.headers.get("Content-Length", 0))
-        if content_length == 0:
-            self.send_response(400)
-            self.end_headers()
-            self.wfile.write(b'{"error": "Empty body"}')
+        try:
+            content_length = int(self.headers.get("Content-Length", 0))
+        except (TypeError, ValueError):
+            self._send_json_error(400, "Invalid Content-Length")
+            return
+
+        if content_length <= 0:
+            self._send_json_error(400, "Empty body")
+            return
+
+        content_type = self.headers.get_content_type().lower()
+        if content_type not in {"application/json", "application/x-protobuf"}:
+            self._send_json_error(415, "Unsupported Media Type")
             return
 
         body = self.rfile.read(content_length)
-        content_type = self.headers.get("Content-Type", "")
-
-        # Check if client accidentally sent binary protobuf
-        if "application/x-protobuf" in content_type:
-            self.send_response(415)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            err_msg = {
-                "error": "Unsupported Media Type: Spandrift receiver accepts HTTP/JSON.",
-                "hint": "Set export OTEL_EXPORTER_OTLP_PROTOCOL='http/json' in your client environment.",
-            }
-            self.wfile.write(json.dumps(err_msg).encode())
-            return
-
         try:
-            payload = json.loads(body.decode("utf-8"))
-        except Exception as e:
-            self.send_response(400)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            err_msg = {
-                "error": f"Invalid JSON payload: {e}",
-                "hint": "Ensure your OpenTelemetry exporter uses JSON: OTEL_EXPORTER_OTLP_PROTOCOL='http/json'",
-            }
-            self.wfile.write(json.dumps(err_msg).encode())
+            if content_type == "application/x-protobuf":
+                payload = decode_otlp_protobuf(body)
+            else:
+                payload = json.loads(body.decode("utf-8"))
+                if not isinstance(payload, dict):
+                    raise ValueError("OTLP JSON request must be an object")
+            spans = parse_otlp_spans(payload)
+        except DecodeError:
+            logger.debug("Invalid OTLP protobuf payload", exc_info=True)
+            self._send_json_error(400, "Invalid protobuf payload")
             return
-
-        # Parse spans from OTLP structure
-        spans: list[Span] = []
-        for rs in payload.get("resourceSpans", []):
-            for ss in rs.get("scopeSpans", []):
-                for raw in ss.get("spans", []):
-                    spans.append(_parse_raw_span(raw))
+        except (
+            UnicodeDecodeError,
+            json.JSONDecodeError,
+            TypeError,
+            ValueError,
+            KeyError,
+        ):
+            logger.debug("Invalid OTLP JSON payload", exc_info=True)
+            self._send_json_error(400, "Invalid JSON payload")
+            return
 
         if spans:
             enriched = enrich_spans(spans)
             self.server.handle_received_spans(enriched)
 
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.end_headers()
-        self.wfile.write(
-            json.dumps({"status": "ok", "spans_received": len(spans)}).encode()
+        if content_type == "application/x-protobuf":
+            response_body = ExportTraceServiceResponse().SerializeToString()
+        else:
+            response_body = b"{}"
+        self._send_body(200, content_type, response_body)
+
+    def _send_json_error(self, status: int, message: str) -> None:
+        """Send a sanitized JSON error response."""
+        self._send_body(
+            status,
+            "application/json",
+            json.dumps({"error": message}).encode("utf-8"),
         )
+
+    def _send_body(self, status: int, content_type: str, body: bytes) -> None:
+        """Send a complete HTTP response with explicit representation headers."""
+        self.send_response(status)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
 
 class OTLPTraceServer(ThreadingHTTPServer):

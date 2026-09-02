@@ -109,14 +109,14 @@ def listen(host: str, port: int, save_dir: Path | None, auto_analyze: bool) -> N
 
     Binds to localhost by default. Use --host 0.0.0.0 to accept remote connections.
 
-    Developers can configure their OpenTelemetry SDK with:
-        export OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318"
-        export OTEL_EXPORTER_OTLP_PROTOCOL="http/json"
+    Accepts OTLP/HTTP protobuf and JSON. The standard Python OTLP HTTP
+    exporter works with its default protobuf protocol.
     """
     from spandrift.server import start_otlp_server
 
     server = start_otlp_server(host=host, port=port, save_dir=save_dir, auto_analyze=auto_analyze)
-    click.echo(f"📡 Spandrift OTLP receiver listening at http://{host}:{port}/v1/traces")
+    click.echo(f"📡 Spandrift OTLP/HTTP receiver listening at http://{host}:{port}/v1/traces")
+    click.echo("   Accepting application/x-protobuf and application/json")
     if save_dir:
         click.echo(f"📁 Saving incoming traces to: {save_dir}")
     click.echo("Press Ctrl+C to stop.\n")

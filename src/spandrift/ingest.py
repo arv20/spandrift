@@ -1,4 +1,4 @@
-"""Ingest spans from OTLP JSON exports and OTel SDK in-memory exporters.
+"""Ingest spans from OTLP exports and OTel SDK in-memory exporters.
 
 Two mapping tables handle attribute normalisation:
 
@@ -16,6 +16,10 @@ import hashlib
 import json
 from pathlib import Path
 from typing import Any
+
+from opentelemetry.proto.collector.trace.v1.trace_service_pb2 import (
+    ExportTraceServiceRequest,
+)
 
 from spandrift.models import Span, SpanKind
 
@@ -74,6 +78,8 @@ def _flatten_value(val: dict[str, Any]) -> Any:
         return float(val["doubleValue"])
     if "boolValue" in val:
         return bool(val["boolValue"])
+    if "bytesValue" in val:
+        return val["bytesValue"]
     if "arrayValue" in val:
         return [_flatten_value(v) for v in val["arrayValue"].get("values", [])]
     if "kvlistValue" in val:
@@ -297,7 +303,7 @@ def _map_openinference(
 
 
 # ===================================================================
-# OTLP JSON loading
+# Common OTLP envelope normalization
 # ===================================================================
 
 def _hex_id(raw: str) -> str:
@@ -305,8 +311,15 @@ def _hex_id(raw: str) -> str:
     return raw.strip().lower()
 
 
-def _parse_raw_span(raw: dict[str, Any]) -> Span:
-    """Convert a single raw OTLP JSON span dict into a normalised Span."""
+def _parse_raw_span(
+    raw: dict[str, Any],
+    *,
+    resource_attributes: dict[str, Any] | None = None,
+    scope_name: str | None = None,
+    scope_version: str | None = None,
+    scope_attributes: dict[str, Any] | None = None,
+) -> Span:
+    """Convert a raw OTLP span mapping into a normalised Span."""
     raw_attrs: list[dict[str, Any]] = raw.get("attributes", [])
     attrs = _flatten_attributes(raw_attrs)
 
@@ -345,8 +358,131 @@ def _parse_raw_span(raw: dict[str, Any]) -> Span:
         status_code=status_code,
         status_message=status_message,
         attributes=attrs,
+        resource_attributes=dict(resource_attributes or {}),
+        scope_name=scope_name or None,
+        scope_version=scope_version or None,
+        scope_attributes=dict(scope_attributes or {}),
         **{k: v for k, v in mapped.items()},
     )
+
+
+def parse_otlp_spans(payload: dict[str, Any]) -> list[Span]:
+    """Normalize every span in a decoded OTLP request envelope."""
+    spans: list[Span] = []
+    for resource_spans in payload.get("resourceSpans", []):
+        resource = resource_spans.get("resource", {})
+        resource_attributes = _flatten_attributes(resource.get("attributes", []))
+
+        for scope_spans in resource_spans.get("scopeSpans", []):
+            scope = scope_spans.get("scope", {})
+            scope_attributes = _flatten_attributes(scope.get("attributes", []))
+
+            for raw_span in scope_spans.get("spans", []):
+                spans.append(
+                    _parse_raw_span(
+                        raw_span,
+                        resource_attributes=resource_attributes,
+                        scope_name=scope.get("name"),
+                        scope_version=scope.get("version"),
+                        scope_attributes=scope_attributes,
+                    )
+                )
+    return spans
+
+
+def _protobuf_any_value(value: Any) -> dict[str, Any]:
+    """Convert an OTLP protobuf AnyValue to its OTLP JSON-shaped mapping."""
+    value_type = value.WhichOneof("value")
+    if value_type == "string_value":
+        return {"stringValue": value.string_value}
+    if value_type == "bool_value":
+        return {"boolValue": value.bool_value}
+    if value_type == "int_value":
+        return {"intValue": value.int_value}
+    if value_type == "double_value":
+        return {"doubleValue": value.double_value}
+    if value_type == "bytes_value":
+        return {"bytesValue": bytes(value.bytes_value)}
+    if value_type == "array_value":
+        return {
+            "arrayValue": {
+                "values": [
+                    _protobuf_any_value(item) for item in value.array_value.values
+                ]
+            }
+        }
+    if value_type == "kvlist_value":
+        return {
+            "kvlistValue": {
+                "values": [
+                    {"key": item.key, "value": _protobuf_any_value(item.value)}
+                    for item in value.kvlist_value.values
+                ]
+            }
+        }
+    return {}
+
+
+def _protobuf_attributes(attributes: Any) -> list[dict[str, Any]]:
+    """Convert protobuf KeyValue messages to OTLP JSON-shaped attributes."""
+    return [
+        {"key": attribute.key, "value": _protobuf_any_value(attribute.value)}
+        for attribute in attributes
+    ]
+
+
+def decode_otlp_protobuf(body: bytes) -> dict[str, Any]:
+    """Decode an OTLP ExportTraceServiceRequest into the common envelope."""
+    request = ExportTraceServiceRequest.FromString(body)
+    resource_spans: list[dict[str, Any]] = []
+
+    for protobuf_resource_spans in request.resource_spans:
+        scope_spans: list[dict[str, Any]] = []
+        for protobuf_scope_spans in protobuf_resource_spans.scope_spans:
+            protobuf_scope = protobuf_scope_spans.scope
+            spans: list[dict[str, Any]] = []
+
+            for protobuf_span in protobuf_scope_spans.spans:
+                raw_span: dict[str, Any] = {
+                    "traceId": bytes(protobuf_span.trace_id).hex(),
+                    "spanId": bytes(protobuf_span.span_id).hex(),
+                    "name": protobuf_span.name,
+                    "kind": int(protobuf_span.kind),
+                    "startTimeUnixNano": protobuf_span.start_time_unix_nano,
+                    "endTimeUnixNano": protobuf_span.end_time_unix_nano,
+                    "attributes": _protobuf_attributes(protobuf_span.attributes),
+                    "status": {
+                        "code": int(protobuf_span.status.code),
+                        "message": protobuf_span.status.message,
+                    },
+                }
+                if protobuf_span.parent_span_id:
+                    raw_span["parentSpanId"] = bytes(protobuf_span.parent_span_id).hex()
+                spans.append(raw_span)
+
+            scope_spans.append(
+                {
+                    "scope": {
+                        "name": protobuf_scope.name,
+                        "version": protobuf_scope.version,
+                        "attributes": _protobuf_attributes(protobuf_scope.attributes),
+                    },
+                    "spans": spans,
+                }
+            )
+
+        resource_spans.append(
+            {
+                "resource": {
+                    "attributes": _protobuf_attributes(
+                        protobuf_resource_spans.resource.attributes
+                    )
+                },
+                "scopeSpans": scope_spans,
+            }
+        )
+
+    return {"resourceSpans": resource_spans}
 
 
 def load_otlp_json(path: str | Path) -> list[Span]:
@@ -360,12 +496,7 @@ def load_otlp_json(path: str | Path) -> list[Span]:
         A list of :class:`Span` objects, one per raw span found in the file.
     """
     data = json.loads(Path(path).read_text(encoding="utf-8"))
-    spans: list[Span] = []
-    for rs in data.get("resourceSpans", []):
-        for ss in rs.get("scopeSpans", []):
-            for raw in ss.get("spans", []):
-                spans.append(_parse_raw_span(raw))
-    return spans
+    return parse_otlp_spans(data)
 
 
 # ===================================================================

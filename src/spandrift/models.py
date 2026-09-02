@@ -71,6 +71,14 @@ class Span:
     # Anything we don't normalize — available for custom analysis
     attributes: dict[str, Any] = dataclasses.field(default_factory=dict)
 
+    # OTLP resource and instrumentation-scope metadata. These remain separate
+    # from span attributes so equal keys from different OTLP namespaces do not
+    # overwrite one another.
+    resource_attributes: dict[str, Any] = dataclasses.field(default_factory=dict)
+    scope_name: str | None = None
+    scope_version: str | None = None
+    scope_attributes: dict[str, Any] = dataclasses.field(default_factory=dict)
+
     @property
     def duration_ms(self) -> float:
         """Wall-clock duration in milliseconds."""

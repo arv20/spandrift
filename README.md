@@ -92,7 +92,41 @@ There's also:
 spandrift listen
 ```
 
-which starts a local OTLP receiver so you don't have to write a trace file first. It binds to `127.0.0.1` by default.
+which starts a local OTLP/HTTP receiver so you don't have to write a trace file first. It binds to `127.0.0.1` by default and receives traces at:
+
+```text
+http://127.0.0.1:4318/v1/traces
+```
+
+The receiver supports both standard OTLP/HTTP protobuf (`application/x-protobuf`)
+and OTLP/HTTP JSON (`application/json`). The normal Python OTLP HTTP exporter
+uses protobuf, so no protocol override is needed:
+
+```python
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+
+provider = TracerProvider()
+trace.set_tracer_provider(provider)
+
+exporter = OTLPSpanExporter(
+    endpoint="http://127.0.0.1:4318/v1/traces"
+)
+
+provider.add_span_processor(BatchSpanProcessor(exporter))
+
+tracer = trace.get_tracer("spandrift-test")
+
+with tracer.start_as_current_span("research_agent"):
+    with tracer.start_as_current_span("llm_call"):
+        pass
+
+provider.shutdown()
+```
+
+If your application already emits OTLP/HTTP JSON, it can continue using the same endpoint unchanged.
 
 ## What it catches
 
