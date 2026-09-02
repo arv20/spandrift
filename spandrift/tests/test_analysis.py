@@ -305,6 +305,58 @@ def test_missing_input_not_flagged_as_duplicate_or_retry_storm():
     assert len(storms) == 0
 
 
+def test_retry_storm_not_chained_across_traces():
+    """Spans from different trace_ids must never be chained into a single storm.
+
+    Under concurrent traffic, a BatchSpanProcessor flush to `spandrift listen`
+    can interleave spans from unrelated executions.  Grouping by trace_id
+    prevents false cross-trace chaining.
+    """
+    # 2 spans from trace A + 2 spans from trace B, all with the same
+    # (name, agent_name, input_hash).  Without trace_id in the key this
+    # would form a 4-span chain; with trace_id each trace has only 2.
+    spans = [
+        Span(
+            trace_id="trace_A",
+            span_id=f"a_{i}",
+            parent_span_id=None,
+            name="web_search",
+            kind=SpanKind.TOOL,
+            agent_name="FactChecker",
+            start_ns=i * 1000,
+            end_ns=(i + 1) * 1000,
+            input_hash="same_hash",
+            input_value="verify claim quantum computing",
+        )
+        for i in range(2)
+    ] + [
+        Span(
+            trace_id="trace_B",
+            span_id=f"b_{i}",
+            parent_span_id=None,
+            name="web_search",
+            kind=SpanKind.TOOL,
+            agent_name="FactChecker",
+            start_ns=i * 1000 + 500,
+            end_ns=(i + 1) * 1000 + 500,
+            input_hash="same_hash",
+            input_value="verify claim quantum computing",
+        )
+        for i in range(2)
+    ]
+    df = spans_to_dataframe(spans)
+
+    # threshold=3: neither trace has 3 spans, so no storm
+    storms = detect_retry_storms(df, threshold=3)
+    assert len(storms) == 0
+
+    # threshold=2: each trace independently forms a 2-span chain (2 storms),
+    # NOT a single 4-span storm across traces
+    storms = detect_retry_storms(df, threshold=2)
+    assert len(storms) == 2
+    for storm in storms:
+        assert storm.chain_length == 2
+
 def test_detect_latency_outliers():
     # Model group with baseline durations around 100ms, and one outlier at 1000ms
     spans = [

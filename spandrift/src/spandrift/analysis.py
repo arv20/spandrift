@@ -339,15 +339,19 @@ def detect_retry_storms(
     storms: list[RetryStorm] = []
 
     grouped = sorted_df.select(
-        "name", "span_id", "input_hash", "input_value", "agent_name"
+        "trace_id", "name", "span_id", "input_hash", "input_value", "agent_name"
     ).to_dicts()
 
-    by_name: dict[tuple[str, str | None], list[dict[str, Any]]] = {}
+    by_key: dict[tuple[str, str, str | None], list[dict[str, Any]]] = {}
     for row in grouped:
-        key = (str(row["name"]), str(row["agent_name"]) if row.get("agent_name") is not None else None)
-        by_name.setdefault(key, []).append(row)
+        key = (
+            str(row["trace_id"]),
+            str(row["name"]),
+            str(row["agent_name"]) if row.get("agent_name") is not None else None,
+        )
+        by_key.setdefault(key, []).append(row)
 
-    for (name, _agent_name), rows in by_name.items():
+    for (_trace_id, name, _agent_name), rows in by_key.items():
         if len(rows) < threshold:
             continue
 
