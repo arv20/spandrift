@@ -32,8 +32,44 @@ spandrift analyze demo/trace.json
 ```
 
 ```text
-[REPLACE WITH REAL OUTPUT — run this against an actual trace before
-shipping the README]
+╭──────────────────── Spandrift Analysis: head_trace.json ─────────────────────╮
+│ Total spans: 15    Total cost: $0.0152                                       │
+│ Wall-clock: 234ms   Compute time: 775ms                                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+                                Per-Agent Rollup
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃               ┃           ┃            ┃         ┃           ┃        Tokens ┃
+┃ Agent         ┃      Cost ┃ Wall-clock ┃ Compute ┃ LLM calls ┃      (in/out) ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ FactChecker   │ $0.002075 │       85ms │   159ms │         1 │       350/120 │
+│ Orchestrator  │ $0.000000 │      234ms │   234ms │         0 │           0/0 │
+│ ResearchAgent │ $0.006800 │      149ms │   255ms │         2 │      1.0k/420 │
+│ WriterAgent   │ $0.006325 │       74ms │   126ms │         1 │       850/420 │
+└───────────────┴───────────┴────────────┴─────────┴───────────┴───────────────┘
+
+                      Execution Waterfall & Concurrency
+ Span / Task         Timeline (░=TTFT, █=Exec)     Duration  TTFT       Cost
+ Orchestrator        ████████████████████████████     234ms     —          —
+  ├─ ResearchAgent   ████████                          74ms     —          —
+  │  ├─ chat gpt-4o    ░░░██                           42ms  21ms  $0.003400
+  │  └─ web_search          █                          11ms     —          —
+  ├─ FactChecker     ██████████                        85ms     —          —
+  │  ├─ chat gpt-4o   ░░██                             31ms  21ms  $0.002075
+  │  ├─ web_search        █                            11ms     —          —
+  │  ├─ web_search         █                           10ms     —          —
+  │  ├─ web_search          █                          11ms     —          —
+  │  └─ web_search           ██                        11ms     —          —
+  ├─ ResearchAgent             █████████               75ms     —          —
+  │  ├─ chat gpt-4o              ░░░██                 42ms  21ms  $0.003400
+  │  └─ web_search                    ██               11ms     —          —
+  └─ WriterAgent                        ████████       74ms     —          —
+     └─ chat gpt-4o                       ░░░░██       52ms  31ms  $0.006325
+
+⚠ Duplicate Calls
+  ResearchAgent called 2× with identical input  wasted: $0.003400
+
+⚠ Retry/Loop Storms
+  web_search: 4 calls with identical input
 ```
 
 You can also compare two runs:
